@@ -1,0 +1,246 @@
+@import 'tailwindcss';
+
+@import 'plyr/dist/plyr.css';
+
+@custom-variant dark (&:where([data-theme="nuit"], [data-theme="nuit"] *));
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-arabic: 'Amiri Quran', 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+
+    --color-gold: #a9792c;
+    --color-gold-soft: #d9bd84;
+    --color-cream: #f5efdf;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+/* Police arabe utilisée pour les versets */
+.font-arabic {
+    font-family: var(--font-arabic);
+    line-height: 2.1;
+}
+
+/* Barre de défilement discrète */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgb(0 0 0 / 0.15);
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(0 0 0 / 0.25);
+}
+[data-theme='nuit'] ::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.18);
+}
+
+/* Lecteur Plyr : lisser les transitions natives */
+.plyr {
+    --plyr-color-main: #0f766e;
+    border-radius: 0.75rem;
+}
+.plyr--audio .plyr__controls {
+    padding: 0.5rem;
+}
+.plyr__menu__container {
+    z-index: 99999 !important;
+}
+
+/* Lecteur Plyr : thème sombre (data-theme="nuit") */
+[data-theme='nuit'] .plyr--audio .plyr__controls {
+    background: #1c1917; /* stone-900 */
+    color: #d6d3d1;      /* stone-300 */
+}
+[data-theme='nuit'] .plyr--audio .plyr__control:hover,
+[data-theme='nuit'] .plyr--audio .plyr__control:focus-visible,
+[data-theme='nuit'] .plyr--audio .plyr__control[aria-expanded='true'] {
+    background: #0f766e;
+    color: #fff;
+}
+[data-theme='nuit'] .plyr--audio .plyr__progress__buffer,
+[data-theme='nuit'] .plyr--audio input[type='range']::-webkit-slider-runnable-track {
+    background-color: rgb(255 255 255 / 0.18);
+}
+[data-theme='nuit'] .plyr--audio input[type='range']::-moz-range-track,
+[data-theme='nuit'] .plyr--audio input[type='range']::-ms-track {
+    background-color: rgb(255 255 255 / 0.18);
+}
+[data-theme='nuit'] .plyr__menu__container {
+    background: #292524; /* stone-800 */
+    color: #d6d3d1;
+    --plyr-menu-background: #292524;
+    --plyr-menu-color: #d6d3d1;
+    --plyr-menu-back-border-color: #44403c;
+    --plyr-menu-back-border-shadow-color: transparent;
+    --plyr-menu-arrow-color: #a8a29e;
+}
+[data-theme='nuit'] .plyr__menu__container .plyr__control:hover,
+[data-theme='nuit'] .plyr__menu__container .plyr__control:focus-visible {
+    background: rgb(255 255 255 / 0.08);
+}
+[data-theme='nuit'] .plyr__menu__container:after {
+    border-top-color: #292524;
+}
+
+@keyframes menuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ─── Admin premium animations ─── */
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+    50%      { box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.12); }
+}
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(24px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes toast-out {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateX(24px) scale(0.96); }
+}
+@keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes modal-in {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Admin utility: animated card entrance */
+.admin-animate-in {
+    animation: slideInUp 0.35s ease-out both;
+}
+.admin-animate-in:nth-child(2) { animation-delay: 0.04s; }
+.admin-animate-in:nth-child(3) { animation-delay: 0.08s; }
+.admin-animate-in:nth-child(4) { animation-delay: 0.12s; }
+.admin-animate-in:nth-child(5) { animation-delay: 0.16s; }
+.admin-animate-in:nth-child(6) { animation-delay: 0.20s; }
+.admin-animate-in:nth-child(7) { animation-delay: 0.24s; }
+.admin-animate-in:nth-child(8) { animation-delay: 0.28s; }
+
+/* Admin utility: KPI card gradient shimmer on hover */
+.admin-card-shine {
+    position: relative;
+    overflow: hidden;
+}
+.admin-card-shine::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.06) 45%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0.06) 55%,
+        transparent 60%
+    );
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+.admin-card-shine:hover::before {
+    opacity: 1;
+    animation: shimmer 1.2s ease-in-out;
+}
+
+/* Admin: glass morphism for sidebar */
+.admin-glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+/* Quiz : entrée des questions et options */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Quiz : feedback "bonne réponse" qui pop */
+@keyframes popIn {
+    0% {
+        transform: scale(0.75);
+        opacity: 0;
+    }
+    55% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Quiz : feedback "mauvaise réponse" qui tremble */
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20%,
+    60% {
+        transform: translateX(-5px);
+    }
+    40%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Quiz : confettis sur l'écran de résultat */
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(50vh) rotate(720deg);
+        opacity: 0;
+    }
+}

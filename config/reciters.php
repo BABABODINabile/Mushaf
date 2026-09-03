@@ -1,0 +1,72 @@
+<?php
+
+return [
+
+    'default' => 'husary',
+
+    'reciters' => [
+        'husary' => [
+            'id' => 'husary',
+            'name' => 'Husary',
+            'name_ar' => 'محمود خليل الحصري',
+            'mualim_slug' => 'mahmoud-khalil-al-husary-mujawwad',
+            'huggingface_folder' => 'Mahmoud Khalil Al Husary (Mujawwad)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+        'matroud' => [
+            'id' => 'matroud',
+            'name' => 'Abdullah Matroud',
+            'name_ar' => 'عبد الله مطرود',
+            'mualim_slug' => 'abdullah-matroud-murattal',
+            'huggingface_folder' => 'Abdullah Matroud (Murattal)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+        'salah-ba-othman' => [
+            'id' => 'salah-ba-othman',
+            'name' => 'Salah Ba Othman',
+            'name_ar' => 'صلاح باعثمان',
+            'archive_org_item' => 'HaramainBaUthman',
+            'bitrate' => 128,
+            'format' => 'mp3',
+        ],
+        'houzeifi' => [
+            'id' => 'houzeifi',
+            'name' => 'Houzeifi',
+            'name_ar' => 'علي الحذيفي',
+            'mualim_slug' => 'ali-abdur-rahman-al-huthaify-murattal',
+            'huggingface_folder' => 'Ali Abdur-Rahman al-Huthaify (Murattal)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+        'minshawi' => [
+            'id' => 'minshawi',
+            'name' => 'Minshawi',
+            'name_ar' => 'محمد صديق المنشاوي',
+            'mualim_slug' => 'muhammad-siddiq-al-minshawi-murattal',
+            'huggingface_folder' => 'Muhammad Siddiq Al Minshawi (Murattal)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+        'sudais' => [
+            'id' => 'sudais',
+            'name' => 'Sudais',
+            'name_ar' => 'عبدالرحمن السديس',
+            'mualim_slug' => 'abdul-rahman-al-sudais-murattal',
+            'huggingface_folder' => 'Abdul Rahman Al Sudais (Murattal)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+        'shureim' => [
+            'id' => 'shureim',
+            'name' => 'Shureim',
+            'name_ar' => 'سعود الشريم',
+            'mualim_slug' => 'saud-al-shuraim-murattal',
+            'huggingface_folder' => 'Saud Al Shuraim (Murattal)',
+            'bitrate' => 32,
+            'format' => 'opus',
+        ],
+    ],
+
+];

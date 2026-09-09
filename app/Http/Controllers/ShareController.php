@@ -30,7 +30,7 @@ class ShareController extends Controller
 
             $item = $ayah;
             $textAr = $ayah->text_ar;
-            $reference = "Sourate {$ayah->surah->number} ({$ayah->surah->name_fr}), verset {$ayah->number_in_surah}";
+            $reference = "Sourate {$ayah->surah->number} ({$ayah->surah->name_ar} — {$ayah->surah->name_fr}), verset {$ayah->number_in_surah}";
 
             // Traduction selon la langue
             $textTranslation = $ayah->text_fr ?? $ayah->text_en ?? '';

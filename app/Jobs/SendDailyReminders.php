@@ -122,7 +122,7 @@ class SendDailyReminders
         return [
             'text_ar' => $ayah->text_ar,
             'translation' => $translation,
-            'ref' => "Sourate {$ayah->surah->number} ({$ayah->surah->name_fr}), verset {$ayah->number_in_surah}",
+            'ref' => "Sourate {$ayah->surah->number} ({$ayah->surah->name_ar} — {$ayah->surah->name_fr}), verset {$ayah->number_in_surah}",
         ];
     }
 

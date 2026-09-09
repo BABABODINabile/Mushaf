@@ -30,6 +30,7 @@ export default defineConfig({
         inertia(),
     ],
     server: {
+        cors: true,
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

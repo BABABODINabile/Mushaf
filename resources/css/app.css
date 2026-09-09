@@ -2,6 +2,19 @@
 
 @import 'plyr/dist/plyr.css';
 
+@font-face {
+    font-family: 'KFGQPC Uthman Taha';
+    src: url('https://cdn.jsdelivr.net/gh/mustafa0x/qpc-fonts@f93bf5f3/various-woff2/UthmanTN1%20Ver10.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'KFGQPC Uthman Taha';
+    src: url('https://cdn.jsdelivr.net/gh/mustafa0x/qpc-fonts@f93bf5f3/various-woff2/UthmanTN1B%20Ver10.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
 @custom-variant dark (&:where([data-theme="nuit"], [data-theme="nuit"] *));
 
 @theme {

@@ -35,7 +35,7 @@ Route::get('/ecouter', [PageController::class, 'ecouter'])->name('ecouter');
 
 // Coran
 Route::get('/coran', [CoranController::class, 'index'])->name('coran');
-Route::get('/coran/{number}', [CoranController::class, 'show'])->name('coran.surah');
+Route::get('/coran/{surah}', [CoranController::class, 'show'])->name('coran.surah');
 
 // Hadiths
 Route::get('/hadiths', [HadithController::class, 'index'])->name('hadiths');

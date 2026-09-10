@@ -178,6 +178,7 @@ export default function Ecouter({ surahs }) {
                                 title: `${pickName(surah, lang)} (${surah.number})`,
                                 reciter: currentReciter?.name,
                                 surahNumber: surah.number,
+                                slug: surah.slug,
                                 r2PublicUrl,
                                 reciterId,
                                 format: currentReciter?.format ?? 'opus',

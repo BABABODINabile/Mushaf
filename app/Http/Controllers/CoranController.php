@@ -18,7 +18,7 @@ class CoranController extends Controller
     {
         $surahs = Surah::orderBy('number')
             ->select([
-                'id', 'number', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count',
+                'id', 'number', 'slug', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count',
                 'start_juz' => Ayah::select('juz')
                     ->whereColumn('surah_id', 'surahs.id')
                     ->orderBy('number_in_surah')
@@ -32,13 +32,19 @@ class CoranController extends Controller
     }
 
     /**
-     * Lecture d'une sourate spécifique
+     * Lecture d'une sourate spécifique (par slug ou nombre)
      */
-    public function show(int $number)
+    public function show(string $surah)
     {
-        $surah = Surah::where('number', $number)->firstOrFail();
+        $surahModel = ctype_digit($surah)
+            ? Surah::where('number', $surah)->firstOrFail()
+            : Surah::where('slug', $surah)->firstOrFail();
 
-        $ayahs = Ayah::where('surah_id', $surah->id)
+        if (ctype_digit($surah)) {
+            return redirect()->route('coran.surah', $surahModel->slug, 301);
+        }
+
+        $ayahs = Ayah::where('surah_id', $surahModel->id)
             ->orderBy('number_in_surah')
             ->select(['id', 'number_in_surah', 'global_number', 'text_ar', 'text_fr', 'text_en', 'juz', 'page'])
             ->get()
@@ -50,7 +56,15 @@ class CoranController extends Controller
                 return $ayah;
             });
 
-        return Inertia::render('Surah', compact('surah', 'ayahs'));
+        $prevSurah = Surah::where('number', $surahModel->number - 1)->first(['id', 'number', 'slug']);
+        $nextSurah = Surah::where('number', $surahModel->number + 1)->first(['id', 'number', 'slug']);
+
+        return Inertia::render('Surah', [
+            'surah' => $surahModel,
+            'ayahs' => $ayahs,
+            'prevSurah' => $prevSurah,
+            'nextSurah' => $nextSurah,
+        ])->toResponse(request())->header('Cache-Control', 'public, max-age=86400');
     }
 
     /**
@@ -59,7 +73,7 @@ class CoranController extends Controller
     public function apiSurahs(): JsonResponse
     {
         $surahs = Surah::orderBy('number')
-            ->select(['id', 'number', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
+            ->select(['id', 'number', 'slug', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
             ->get();
 
         return response()->json($surahs);
@@ -108,7 +122,7 @@ class CoranController extends Controller
                 ->orWhere('number', $query);
         })
             ->orderBy('number')
-            ->select(['id', 'number', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
+            ->select(['id', 'number', 'slug', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
             ->get();
 
         return response()->json($surahs);

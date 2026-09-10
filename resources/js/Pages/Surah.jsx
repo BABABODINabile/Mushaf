@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import FavoriteButton from '../components/FavoriteButton';
 import ShareButton from '../components/ShareButton';
 import { useAudio } from '../components/AudioProvider';
@@ -27,7 +28,7 @@ function AyahStar({ number }) {
     );
 }
 
-export default function Surah({ surah, ayahs }) {
+export default function Surah({ surah, ayahs, prevSurah, nextSurah }) {
     const { play, toggle, track, isPlaying } = useAudio();
     const { auth, reciters, defaultReciter, r2PublicUrl } = usePage().props;
     const {
@@ -168,17 +169,34 @@ export default function Surah({ surah, ayahs }) {
             title: `${pickName(surah, lang)} (${surah.number})`,
             reciter: currentReciter?.name,
             surahNumber: surah.number,
+            slug: surah.slug,
             r2PublicUrl,
             reciterId,
             format: currentReciter?.format ?? 'opus',
         });
     };
 
-    const prev = surah.number > 1 ? surah.number - 1 : null;
-    const next = surah.number < 114 ? surah.number + 1 : null;
+    const prev = prevSurah ?? null;
+    const next = nextSurah ?? null;
 
     return (
         <>
+        <SeoHead
+            title={`${pickName(surah, lang)} — Sourate ${surah.number}`}
+            description={`Lisez la sourate ${pickName(surah, lang)} (${surah.ayah_count} versets) en arabe avec traduction française et anglaise.`}
+            path={`/coran/${surah.slug}`}
+            schema={{
+                '@context': 'https://schema.org',
+                '@type': 'Book',
+                name: surah.name_ar,
+                alternateName: [surah.name_en, surah.name_fr],
+                position: surah.number,
+                numberOfPages: surah.ayah_count,
+                inLanguage: ['ar', 'fr', 'en'],
+                genre: 'Religious text',
+                publisher: { '@type': 'Organization', name: 'Mushaf' },
+            }}
+        />
         <div className="mx-auto max-w-3xl space-y-6">
             <div
                 className="fixed top-0 left-0 right-0 h-1 z-50 bg-stone-200 dark:bg-stone-700"
@@ -209,20 +227,20 @@ export default function Surah({ surah, ayahs }) {
                 <div className="flex items-center justify-between">
                     {prev ? (
                         <Link
-                            href={`/coran/${prev}`}
+                            href={`/coran/${prev.slug}`}
                             className="rounded-lg bg-white/10 px-3 py-2 text-sm hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
-                            ← Sourate {prev}
+                            ← Sourate {prev.number}
                         </Link>
                     ) : (
                         <span className="w-24" />
                     )}
                     {next ? (
                         <Link
-                            href={`/coran/${next}`}
+                            href={`/coran/${next.slug}`}
                             className="rounded-lg bg-white/10 px-3 py-2 text-sm hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
-                            Sourate {next} →
+                            Sourate {next.number} →
                         </Link>
                     ) : (
                         <span className="w-24" />

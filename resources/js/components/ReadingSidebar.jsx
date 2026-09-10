@@ -39,8 +39,8 @@ export default function ReadingSidebar({ open, onClose }) {
         }
     }, [open, fetchHistory]);
 
-    function handlePlay(surahNumber) {
-        router.get(`/coran/${surahNumber}`, {}, {
+    function handlePlay(surahNumber, surahSlug) {
+        router.get(`/coran/${surahSlug ?? surahNumber}`, {}, {
             onSuccess: () => {
                 // small delay for page to render
                 setTimeout(() => {
@@ -103,7 +103,7 @@ export default function ReadingSidebar({ open, onClose }) {
                                     <li key={`reading-${i}`}>
                                         <button
                                             type="button"
-                                            onClick={() => handlePlay(item.surah_number)}
+                                            onClick={() => handlePlay(item.surah_number, item.surah_slug)}
                                             className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-stone-50 dark:hover:bg-stone-800/50"
                                         >
                                             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-teal-50 text-xs font-bold text-teal-700 dark:bg-teal-900/40 dark:text-teal-300">
@@ -137,7 +137,7 @@ export default function ReadingSidebar({ open, onClose }) {
                                     <li key={`audio-${i}`}>
                                         <button
                                             type="button"
-                                            onClick={() => handlePlay(item.surah_number)}
+                                            onClick={() => handlePlay(item.surah_number, item.surah_slug)}
                                             className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-stone-50 dark:hover:bg-stone-800/50"
                                         >
                                             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gold/10 text-xs font-bold text-gold dark:text-gold-soft">

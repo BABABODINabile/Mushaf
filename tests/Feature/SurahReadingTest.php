@@ -29,6 +29,7 @@ class SurahReadingTest extends TestCase
     {
         $surah = Surah::create([
             'number' => $number,
+            'slug' => 'surah-'.$number,
             'name_ar' => $nameAr,
             'name_en' => "Surah $number",
             'name_fr' => "Surah $number",
@@ -49,7 +50,7 @@ class SurahReadingTest extends TestCase
 
     private function firstAyahOnPage(int $number): string
     {
-        return $this->get("/coran/$number")
+        return $this->get("/coran/surah-$number")
             ->assertOk()
             ->assertInertia(fn ($page) => $page->component('Surah'))
             ->viewData('page')['props']['ayahs'][0]['text_ar'];
@@ -73,5 +74,12 @@ class SurahReadingTest extends TestCase
     public function test_alfatiha_keeps_bismillah_as_its_first_verse(): void
     {
         $this->assertSame(self::BISMILLAH, $this->firstAyahOnPage(1));
+    }
+
+    public function test_numeric_surah_url_redirects_to_slug(): void
+    {
+        $this->get('/coran/2')
+            ->assertRedirect('/coran/surah-2')
+            ->assertStatus(301);
     }
 }

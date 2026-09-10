@@ -11,7 +11,7 @@ class Surah extends Model
     use HasFactory;
 
     protected $fillable = [
-        'number', 'name_ar', 'name_en', 'name_fr',
+        'number', 'slug', 'name_ar', 'name_en', 'name_fr',
         'revelation_type', 'ayah_count',
     ];
 
@@ -21,6 +21,11 @@ class Surah extends Model
             'number' => 'integer',
             'ayah_count' => 'integer',
         ];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
     /**

@@ -207,7 +207,7 @@ export default function Coran({ surahs }) {
                     {filtered.map((surah) => (
                         <Link
                             key={surah.id}
-                            href={`/coran/${surah.number}`}
+                            href={`/coran/${surah.slug}`}
                             className={`group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition hover:border-gold-soft hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-gold-soft`}
                         >
                             <Medallion className="h-10 w-10 shrink-0 text-sm font-semibold text-stone-600 transition group-hover:text-gold dark:text-stone-300">

@@ -497,7 +497,7 @@ setTrack({
                                 <Medallion className="h-7 w-7 shrink-0" />
                                 {track.surahNumber ? (
                                     <Link
-                                        href={`/coran/${track.surahNumber}`}
+                                        href={`/coran/${track.slug ?? track.surahNumber}`}
                                         className="truncate text-sm font-semibold text-stone-800 transition hover:text-gold dark:text-stone-100 dark:hover:text-gold"
                                     >
                                         {track.title}

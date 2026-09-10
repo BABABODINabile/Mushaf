@@ -33,7 +33,7 @@ class PageController extends Controller
     public function ecouter()
     {
         $surahs = Surah::orderBy('number')
-            ->select(['id', 'number', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
+            ->select(['id', 'number', 'slug', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
             ->get();
 
         return Inertia::render('Ecouter', compact('surahs'))
@@ -76,6 +76,7 @@ class PageController extends Controller
         return [
             'id' => $ayah->id,
             'surah_number' => $ayah->surah->number,
+            'surah_slug' => $ayah->surah->slug,
             'surah_name_fr' => $ayah->surah->name_fr,
             'surah_name_en' => $ayah->surah->name_en,
             'surah_name_ar' => $ayah->surah->name_ar,
@@ -138,6 +139,7 @@ class PageController extends Controller
             ->get()
             ->map(fn ($h) => [
                 'surah_number' => $h->surah->number,
+                'surah_slug' => $h->surah->slug,
                 'surah_name_fr' => $h->surah->name_fr,
                 'last_ayah' => $h->last_ayah,
                 'read_at' => $h->read_at->toIso8601String(),
@@ -180,6 +182,7 @@ class PageController extends Controller
             ->get()
             ->map(fn ($h) => [
                 'surah_number' => $h->surah->number,
+                'surah_slug' => $h->surah->slug,
                 'surah_name_fr' => $h->surah->name_fr,
                 'reciter_id' => $h->reciter_id,
                 'position_seconds' => $h->position_seconds,

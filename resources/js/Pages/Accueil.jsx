@@ -223,7 +223,7 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                         <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold">
                             <span>—</span> Verset du jour <span>—</span>
                         </p>
-                        <Link href={`/coran/${verseOfDay.surah_number}`} className="block px-3 py-2">
+                        <Link href={`/coran/${verseOfDay.surah_slug ?? verseOfDay.surah_number}`} className="block px-3 py-2">
                             <p className="text-center font-arabic text-2xl leading-loose text-stone-800 sm:text-3xl dark:text-stone-100">
                                 {verseOfDay.text_ar}
                             </p>
@@ -280,7 +280,7 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                     <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
                         {reading && (
                             <Link
-                                href={`/coran/${reading.surah_number}#ayah-${reading.last_ayah}`}
+                                href={`/coran/${reading.surah_slug ?? reading.surah_number}#ayah-${reading.last_ayah}`}
                                 className="group rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-stone-800 dark:bg-stone-900"
                             >
                                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">

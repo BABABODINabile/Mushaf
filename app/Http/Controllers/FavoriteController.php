@@ -35,6 +35,7 @@ class FavoriteController extends Controller
                 'number_in_surah' => $ayah->number_in_surah,
                 'surah' => [
                     'number' => $ayah->surah->number,
+                    'slug' => $ayah->surah->slug,
                     'name_fr' => $ayah->surah->name_fr,
                     'name_en' => $ayah->surah->name_en,
                     'name_ar' => $ayah->surah->name_ar,

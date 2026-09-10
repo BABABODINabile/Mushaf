@@ -60,6 +60,7 @@ class SearchController extends Controller
                     'text_fr' => $ayah->text_fr,
                     'text_en' => $ayah->text_en,
                     'surah_number' => $ayah->surah->number,
+                    'surah_slug' => $ayah->surah->slug,
                     'surah_name_fr' => $ayah->surah->name_fr,
                     'surah_name_en' => $ayah->surah->name_en,
                     'surah_name_ar' => $ayah->surah->name_ar,

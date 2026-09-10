@@ -129,7 +129,7 @@ export default function Search() {
                     {results.ayahs.map((ayah) => (
                         <Link
                             key={ayah.id}
-                            href={`/coran/${ayah.surah_number}#ayah-${ayah.number_in_surah}`}
+                            href={`/coran/${ayah.surah_slug ?? ayah.surah_number}#ayah-${ayah.number_in_surah}`}
                             className="block rounded-xl border border-stone-200 bg-white p-4 shadow-sm hover:border-gold-soft hover:shadow-md dark:border-stone-800 dark:bg-stone-900 dark:hover:border-gold-soft"
                         >
                             <p className="text-right font-arabic text-lg leading-loose text-stone-800 dark:text-stone-100">

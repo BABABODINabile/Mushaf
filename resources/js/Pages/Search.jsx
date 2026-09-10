@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import EmptyState from '../components/EmptyState';
 import { usePreferences } from '../components/PreferencesContext';
@@ -51,6 +52,11 @@ export default function Search() {
 
     return (
         <div className="mx-auto max-w-3xl space-y-6">
+            <SeoHead
+                title="Recherche"
+                description="Recherchez dans le Coran et les hadiths par mot-clé, nom de sourate, ou numéro de verset."
+                path="/search"
+            />
             <PageHeader
                 eyebrow="Explorer"
                 title="Recherche"

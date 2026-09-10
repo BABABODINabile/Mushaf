@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import { usePreferences } from '../components/PreferencesContext';
 import { pickName } from '../lib/translation';
 
@@ -856,6 +857,11 @@ export default function Quiz({ isLoggedIn, bestScore, weeklyTop, myRank, surahs 
 
     return (
         <AppLayout>
+            <SeoHead
+                title="Quiz coranique"
+                description="Testez vos connaissances sur le Coran en devinant la sourate à partir du verset arabe."
+                path="/quiz"
+            />
             <div className="px-4 py-8 sm:px-6 lg:px-8 lg:-mt-8 lg:flex lg:min-h-[calc(100dvh-4rem)] lg:flex-col lg:overflow-y-auto">
                 <div className="w-full lg:my-auto">
                 {screen === 'config' && (

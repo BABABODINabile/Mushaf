@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import { XIcon, FacebookIcon, WhatsappIcon } from '../components/Icons';
 import { shareOrDownload } from '../lib/shareCard';
 import { usePreferences } from '../components/PreferencesContext';
@@ -47,6 +48,11 @@ export default function Share({
 
     return (
         <div className="mx-auto max-w-2xl space-y-8">
+            <SeoHead
+                title={reference}
+                description={displayText || `Partagez : ${reference}`}
+                path={url || '/share'}
+            />
             {/* En-tête */}
             <div className="text-center">
                 <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">

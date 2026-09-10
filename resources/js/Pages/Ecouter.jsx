@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import Medallion from '../components/Medallion';
 import { useAudio } from '../components/AudioProvider';
@@ -145,6 +146,11 @@ export default function Ecouter({ surahs }) {
 
     return (
         <div className="space-y-6">
+            <SeoHead
+                title="Écouter le Coran"
+                description="Écoutez la récitation du Coran par plusieurs récitateurs, avec lecture continue et téléchargement."
+                path="/ecouter"
+            />
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <PageHeader
                     eyebrow="Audio"

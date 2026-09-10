@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import Medallion from '../components/Medallion';
 import EmptyState from '../components/EmptyState';
@@ -151,6 +152,11 @@ export default function Coran({ surahs }) {
 
     return (
         <div className="space-y-6">
+            <SeoHead
+                title="Index des sourates"
+                description="Parcourez les 114 sourates du Coran avec traduction française et anglaise, texte arabe, et écoute audio."
+                path="/coran"
+            />
             <PageHeader
                 eyebrow="Le Coran"
                 title="Les sourates"

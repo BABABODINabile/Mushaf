@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import { MosqueIcon, CalendarDayIcon, CalendarWeekIcon } from '../components/Icons';
 
@@ -46,6 +47,11 @@ export default function Rappels() {
 
     return (
         <div className="mx-auto max-w-2xl space-y-8">
+            <SeoHead
+                title="Rappels quotidiens"
+                description="Inscrivez-vous pour recevoir un verset du Coran ou un hadith par email chaque jour."
+                path="/rappels"
+            />
             <div className="text-center">
                 <span className="grid h-16 w-16 mx-auto place-items-center rounded-2xl bg-teal-700 text-white shadow">
                     <MosqueIcon className="h-8 w-8" />

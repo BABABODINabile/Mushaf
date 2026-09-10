@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import FavoriteButton from '../components/FavoriteButton';
 import ShareButton from '../components/ShareButton';
 import PageHeader from '../components/PageHeader';
@@ -24,6 +25,11 @@ export default function Hadiths({ collection, hadiths, query: serverQuery }) {
 
     return (
         <div className="space-y-6">
+            <SeoHead
+                title="Hadiths"
+                description="Les 40 hadiths de l'imam An-Nawawi avec texte arabe et traduction, pour approfondir la Sunna du Prophète ﷺ."
+                path="/hadiths"
+            />
             <PageHeader
                 eyebrow="La Sunna"
                 title="Hadiths"

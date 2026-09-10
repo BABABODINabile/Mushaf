@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import ShareButton from '../components/ShareButton';
 import { useAudio } from '../components/AudioProvider';
 import { usePreferences } from '../components/PreferencesContext';
@@ -197,6 +198,22 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
 
     return (
         <div className="space-y-10">
+            <SeoHead
+                title="Lire et comprendre le Coran"
+                description="Le Coran complet et les hadiths authentiques, pour une lecture posée — et un rappel qui vous retrouve chaque jour."
+                path="/"
+                schema={{
+                    '@context': 'https://schema.org',
+                    '@type': 'WebSite',
+                    name: 'Mushaf',
+                    url: 'https://mushaf.app',
+                    potentialAction: {
+                        '@type': 'SearchAction',
+                        target: 'https://mushaf.app/search?q={search_term_string}',
+                        'query-input': 'required name=search_term_string',
+                    },
+                }}
+            />
             {/* Hero */}
             <section className="relative overflow-hidden rounded-3xl border border-stone-200 bg-white p-8 shadow-sm sm:p-10 dark:border-stone-800 dark:bg-stone-900">
                 <HeroCorners className="stroke-gold" />

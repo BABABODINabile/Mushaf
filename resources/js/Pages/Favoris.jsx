@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../components/AppLayout';
+import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import EmptyState from '../components/EmptyState';
 import { usePreferences } from '../components/PreferencesContext';
@@ -31,6 +32,11 @@ export default function Favoris({ ayahs, hadiths }) {
 
     return (
         <div className="mx-auto max-w-3xl space-y-8">
+            <SeoHead
+                title="Mes favoris"
+                description="Retrouvez vos versets et hadiths favoris du Coran et de la Sunna."
+                path="/favoris"
+            />
             <PageHeader
                 eyebrow="Votre sélection"
                 title="Mes favoris"

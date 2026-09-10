@@ -7,6 +7,7 @@ const LINE_HEIGHT_STORAGE_KEY = 'mushaf-line-height';
 const READING_MODE_STORAGE_KEY = 'mushaf-reading-mode';
 
 function readStored(key, fallback, parse) {
+    if (typeof window === 'undefined') return fallback;
     try {
         const raw = localStorage.getItem(key);
         return parse(raw);
@@ -16,6 +17,7 @@ function readStored(key, fallback, parse) {
 }
 
 function readInitialLang() {
+    if (typeof window === 'undefined') return 'fr';
     const raw = localStorage.getItem('mushaf-lang');
     return ['fr', 'en', 'ar'].includes(raw) ? raw : 'fr';
 }

@@ -3,11 +3,13 @@ import { AudioProvider } from './components/AudioProvider';
 import { PreferencesProvider } from './components/PreferencesContext';
 import { ConfirmProvider } from './components/ConfirmDialog';
 
-const savedTheme = localStorage.getItem('mushaf-theme');
-document.documentElement.setAttribute('data-theme', savedTheme === 'nuit' ? 'nuit' : 'jour');
+if (typeof window !== 'undefined') {
+    const savedTheme = localStorage.getItem('mushaf-theme');
+    document.documentElement.setAttribute('data-theme', savedTheme === 'nuit' ? 'nuit' : 'jour');
 
-const savedLang = localStorage.getItem('mushaf-lang');
-document.documentElement.setAttribute('lang', savedLang === 'en' ? 'en' : savedLang === 'ar' ? 'ar' : 'fr');
+    const savedLang = localStorage.getItem('mushaf-lang');
+    document.documentElement.setAttribute('lang', savedLang === 'en' ? 'en' : savedLang === 'ar' ? 'ar' : 'fr');
+}
 
 createInertiaApp({
     strictMode: true,
@@ -16,8 +18,7 @@ createInertiaApp({
     },
     title: (title) => (title ? `${title} · Mushaf` : 'Mushaf'),
     withApp(app, { page }) {
-        // Rendre le config Ziggy disponible globalement pour useRoute()
-        if (page.props.ziggy) {
+        if (typeof window !== 'undefined' && page.props.ziggy) {
             globalThis.Ziggy = page.props.ziggy;
         }
 

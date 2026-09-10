@@ -419,10 +419,12 @@ function SurahListPicker({ surahs, lang, selectedId, onSelect }) {
                                 <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${active ? 'bg-teal-700 text-white' : 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400'}`}>
                                     {s.number}
                                 </span>
-                                <span className="min-w-0 flex-1 text-sm font-medium text-stone-800 dark:text-stone-100">
-                                    {pickName(s, lang)}
+                                <span className="flex min-w-0 flex-1 flex-col">
+                                    <span className="truncate text-right font-arabic text-sm font-medium text-stone-800 dark:text-stone-100">
+                                        {s.name_ar}
+                                    </span>
+                                    <span className="text-xs text-stone-400">{pickName(s, lang)}</span>
                                 </span>
-                                <span className="shrink-0 text-xs text-stone-400">{s.name_ar}</span>
                             </button>
                         </li>
                     );
@@ -448,6 +450,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
     const isListType = question.options.length === 0;
     const isRevealed = question.type === 'revealed';
     const isVerbosePrompt = question.type === 'ayah_surah_name' || question.type === 'surah_first_ayah' || question.type === 'revealed';
+    const isArabicPrompt = question.type === 'verse' || question.type === 'verse_all' || question.type === 'juz_surah' || question.type === 'surah_first_ayah' || question.type === 'revealed';
 
     useEffect(() => {
         timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
@@ -539,7 +542,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                             {question.hint}
                         </span>
                     )}
-                    <p className={`mt-4 ${isVerbosePrompt ? 'text-center text-xl font-semibold leading-relaxed text-stone-800 dark:text-stone-100' : 'text-right text-3xl leading-[2.2]'} ${isVerbosePrompt ? '' : 'font-arabic'}`}>
+                    <p className={`mt-4 ${isVerbosePrompt ? 'text-center text-xl font-semibold leading-relaxed text-stone-800 dark:text-stone-100' : 'text-center text-3xl leading-[2.2]'} ${isArabicPrompt ? 'font-arabic' : ''}`}>
                         {question.prompt}
                     </p>
                 </div>

@@ -59,7 +59,7 @@ class QuizGenerator
         $used['ayahs'][] = $ayah->id;
 
         $options = $withOptions
-            ? $this->buildSurahOptions($ayah->surah->number, $used['surahs'], $lang)
+            ? $this->buildSurahOptions($ayah->surah->number, $used['surahs'])
             : [];
 
         return [
@@ -91,7 +91,7 @@ class QuizGenerator
             'prompt' => $this->ayahTranslation($ayah, $lang),
             'hint' => $ayah->text_ar,
             'correctOptionId' => (string) $ayah->surah->number,
-            'options' => $this->buildSurahOptions($ayah->surah->number, $used['surahs'], $lang),
+            'options' => $this->buildSurahOptions($ayah->surah->number, $used['surahs']),
         ];
     }
 
@@ -135,7 +135,7 @@ class QuizGenerator
         return [
             'id' => "first:{$correctAyah->id}",
             'type' => 'surah_first_ayah',
-            'prompt' => $this->surahName($surah, $lang),
+            'prompt' => $surah->name_ar,
             'hint' => null,
             'correctOptionId' => (string) $correctAyah->id,
             'options' => $options->shuffle()->values()->all(),
@@ -161,7 +161,7 @@ class QuizGenerator
             'prompt' => $ayah->text_ar,
             'hint' => "Juz {$ayah->juz}",
             'correctOptionId' => (string) $ayah->surah->number,
-            'options' => $this->buildSurahOptions($ayah->surah->number, $used['surahs'], $lang),
+            'options' => $this->buildSurahOptions($ayah->surah->number, $used['surahs']),
         ];
     }
 
@@ -181,7 +181,7 @@ class QuizGenerator
         return [
             'id' => "revealed:{$surah->id}",
             'type' => 'revealed',
-            'prompt' => $this->surahName($surah, $lang),
+            'prompt' => $surah->name_ar,
             'hint' => null,
             'correctOptionId' => $surah->revelation_type,
             'options' => collect([
@@ -206,9 +206,9 @@ class QuizGenerator
     }
 
     /**
-     * Construit 4 options sourates (bonne + 3 distracteurs), mélangées, dans la langue choisie.
+     * Construit 4 options sourates (bonne + 3 distracteurs), mélangées, en arabe.
      */
-    private function buildSurahOptions(int $correctNumber, array &$usedSurahNumbers, string $lang): array
+    private function buildSurahOptions(int $correctNumber, array &$usedSurahNumbers): array
     {
         $usedSurahNumbers[] = $correctNumber;
 
@@ -220,24 +220,15 @@ class QuizGenerator
             ->get();
 
         $options = collect([
-            ['id' => (string) $correct->number, 'label' => $this->surahName($correct, $lang)],
+            ['id' => (string) $correct->number, 'label' => $correct->name_ar],
         ]);
 
         foreach ($distractors as $d) {
-            $options->push(['id' => (string) $d->number, 'label' => $this->surahName($d, $lang)]);
+            $options->push(['id' => (string) $d->number, 'label' => $d->name_ar]);
             $usedSurahNumbers[] = $d->number;
         }
 
         return $options->shuffle()->values()->all();
-    }
-
-    private function surahName(Surah $surah, string $lang): string
-    {
-        return match ($lang) {
-            'ar' => $surah->name_ar,
-            'en' => $surah->name_en ?: $surah->name_fr,
-            default => $surah->name_fr ?: $surah->name_en,
-        };
     }
 
     private function ayahTranslation(Ayah $ayah, string $lang): string

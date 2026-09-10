@@ -36,7 +36,9 @@ class PageController extends Controller
             ->select(['id', 'number', 'name_ar', 'name_en', 'name_fr', 'revelation_type', 'ayah_count'])
             ->get();
 
-        return Inertia::render('Ecouter', compact('surahs'));
+        return Inertia::render('Ecouter', compact('surahs'))
+            ->toResponse(request())
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 
     /**

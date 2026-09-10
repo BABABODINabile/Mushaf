@@ -26,7 +26,9 @@ class CoranController extends Controller
             ])
             ->get();
 
-        return Inertia::render('Coran', compact('surahs'));
+        return Inertia::render('Coran', compact('surahs'))
+            ->toResponse(request())
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 
     /**

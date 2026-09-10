@@ -124,11 +124,11 @@ class QuizGenerator
             ->get();
 
         $options = collect([
-            ['id' => (string) $correctAyah->id, 'label' => $correctAyah->text_ar],
+            ['id' => (string) $correctAyah->id, 'label' => QuranText::firstAyahLabel($correctAyah->text_ar)],
         ]);
 
         foreach ($distractors as $d) {
-            $options->push(['id' => (string) $d->id, 'label' => $d->text_ar]);
+            $options->push(['id' => (string) $d->id, 'label' => QuranText::firstAyahLabel($d->text_ar)]);
             $used['ayahs'][] = $d->id;
         }
 

@@ -8,4 +8,4 @@ Before planning or editing, find the row whose globs match the file's path and r
 | resources/js/hooks/useSelectable.js | .ai/rules/hooks.md |
 | app/Jobs/** | .ai/rules/jobs.md |
 | resources/js/app.jsx | .ai/rules/js.md |
-| app/Services/BackgroundCommandRunner.php | .ai/rules/services.md |
+| app/Services/BackgroundCommandRunner.php, app/Services/** | .ai/rules/services.md |

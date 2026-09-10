@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ayah;
 use App\Models\Surah;
+use App\Services\QuranText;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,7 +39,14 @@ class CoranController extends Controller
         $ayahs = Ayah::where('surah_id', $surah->id)
             ->orderBy('number_in_surah')
             ->select(['id', 'number_in_surah', 'global_number', 'text_ar', 'text_fr', 'text_en', 'juz', 'page'])
-            ->get();
+            ->get()
+            ->map(function (Ayah $ayah) {
+                if ($ayah->number_in_surah === 1) {
+                    $ayah->text_ar = QuranText::firstAyahLabel($ayah->text_ar);
+                }
+
+                return $ayah;
+            });
 
         return Inertia::render('Surah', compact('surah', 'ayahs'));
     }
@@ -65,7 +73,14 @@ class CoranController extends Controller
         $ayahs = Ayah::where('surah_id', $surah->id)
             ->orderBy('number_in_surah')
             ->select(['id', 'number_in_surah', 'global_number', 'text_ar', 'text_fr', 'text_en', 'juz', 'page'])
-            ->get();
+            ->get()
+            ->map(function (Ayah $ayah) {
+                if ($ayah->number_in_surah === 1) {
+                    $ayah->text_ar = QuranText::firstAyahLabel($ayah->text_ar);
+                }
+
+                return $ayah;
+            });
 
         return response()->json([
             'surah' => $surah,

@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /profile
+Disallow: /favoris
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://mushaf.app/sitemap.xml

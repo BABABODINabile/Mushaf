@@ -16,8 +16,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShareController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
+
+// ═══════════════════════════════════════════
+// Sitemap
+// ═══════════════════════════════════════════
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // ═══════════════════════════════════════════
 // Pages Mushaf (SPA Inertia)

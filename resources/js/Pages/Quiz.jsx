@@ -444,6 +444,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
     const [validated, setValidated] = useState(false);
     const [elapsed, setElapsed] = useState(0);
     const timerRef = useRef(null);
+    const autoNextRef = useRef(null);
 
     const question = questions[currentIdx];
     const isLast = currentIdx === questions.length - 1;
@@ -454,21 +455,34 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
 
     useEffect(() => {
         timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
-        return () => clearInterval(timerRef.current);
+        return () => {
+            clearInterval(timerRef.current);
+            clearTimeout(autoNextRef.current);
+        };
     }, []);
+
+    const commitAnswer = useCallback((optionId) => {
+        if (validated) return;
+        setSelectedId(optionId);
+        setValidated(true);
+        setAnswers((prev) => [...prev, { id: question.id, selectedOptionId: optionId }]);
+    }, [validated, question]);
 
     const selectOption = useCallback((optionId) => {
         if (validated) return;
-        setSelectedId(optionId);
-    }, [validated]);
+        commitAnswer(optionId);
+        if (optionId === question.correctOptionId) {
+            autoNextRef.current = setTimeout(() => handleNextRef.current(), 1200);
+        }
+    }, [validated, question, commitAnswer]);
 
     const handleValidate = useCallback(() => {
         if (!selectedId || validated) return;
-        setValidated(true);
-        setAnswers((prev) => [...prev, { id: question.id, selectedOptionId: selectedId }]);
-    }, [selectedId, validated, question]);
+        commitAnswer(selectedId);
+    }, [selectedId, validated, commitAnswer]);
 
     const handleNext = useCallback(() => {
+        clearTimeout(autoNextRef.current);
         if (isLast) {
             clearInterval(timerRef.current);
             onFinish([...answers], elapsed);
@@ -478,6 +492,9 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
             setValidated(false);
         }
     }, [isLast, answers, elapsed, onFinish]);
+
+    const handleNextRef = useRef(handleNext);
+    handleNextRef.current = handleNext;
 
     const isCorrect = validated && selectedId === question.correctOptionId;
 

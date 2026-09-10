@@ -241,10 +241,10 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
     const [type, setType] = useState('verse');
 
     return (
-        <div className="mx-auto max-w-md space-y-6">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-700 via-teal-800 to-emerald-900 p-8 text-center shadow-lg">
+        <div className="mx-auto w-full max-w-5xl space-y-5">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-700 via-teal-800 to-emerald-900 px-6 py-5 text-center shadow-lg lg:px-8 lg:py-6">
                 <HeroCorners className="stroke-gold-soft" />
-                <span className="pointer-events-none absolute -bottom-8 -right-8 text-[10rem] leading-none text-white/10 select-none" aria-hidden="true">
+                <span className="pointer-events-none absolute -bottom-8 -right-8 text-[7rem] leading-none text-white/10 select-none lg:text-[8rem]" aria-hidden="true">
                     ﷽
                 </span>
 
@@ -255,8 +255,8 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                         </svg>
                         Quiz
                     </span>
-                    <h1 className="mt-4 font-serif text-3xl font-bold text-white">{t.title}</h1>
-                    <p className="mt-2 text-sm leading-relaxed text-teal-100">{t.subtitle}</p>
+                    <h1 className="mt-3 font-serif text-2xl font-bold text-white lg:text-3xl">{t.title}</h1>
+                    <p className="mt-1 text-sm leading-relaxed text-teal-100">{t.subtitle}</p>
                 </div>
             </div>
 
@@ -266,7 +266,9 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                 </div>
             )}
 
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900">
+            <div className="space-y-5 lg:grid lg:grid-cols-[3fr_2fr] lg:items-start lg:gap-8 lg:space-y-0">
+                <div className="space-y-5">
+                    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900">
                 <div className="mb-3 flex items-center gap-2">
                     <span className="inline-block h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
                     <label className="text-xs font-bold uppercase tracking-[0.16em] text-gold">
@@ -279,7 +281,7 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                             key={n}
                             type="button"
                             onClick={() => setCount(n)}
-                            className={`flex-1 rounded-xl px-4 py-4 text-xl font-bold transition-all duration-200 ${
+                            className={`flex-1 rounded-xl px-4 py-3 text-xl font-bold transition-all duration-200 ${
                                 count === n
                                     ? 'bg-gradient-to-br from-teal-700 to-emerald-700 text-white shadow-md ring-2 ring-gold-soft ring-offset-2 ring-offset-white dark:ring-offset-stone-900'
                                     : 'bg-stone-100 text-stone-600 hover:-translate-y-0.5 hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
@@ -298,13 +300,13 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                         {t.typeTitle}
                     </label>
                 </div>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {TYPE_OPTIONS.map((opt) => (
                         <button
                             key={opt.key}
                             type="button"
                             onClick={() => setType(opt.key)}
-                            className={`flex items-start gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all duration-200 ${
+                            className={`flex items-start gap-3 rounded-xl border-2 px-4 py-2.5 text-left transition-all duration-200 ${
                                 type === opt.key
                                     ? 'border-gold-soft bg-gold/5 shadow-md'
                                     : 'border-stone-200 bg-white hover:border-stone-300 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:hover:bg-stone-800'
@@ -327,44 +329,48 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                     ))}
                 </div>
             </div>
+                    </div>
 
-            {weeklyTop?.length > 0 && (
-                <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
-                    <p className="flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.16em] text-gold">
-                        <span aria-hidden="true">🏆</span> <span>—</span> {t.weeklyTop} <span>—</span>
-                    </p>
-                    <ol className="mt-3 space-y-1.5">
-                        {weeklyTop.slice(0, 3).map((entry) => (
-                            <li key={`${entry.rank}-${entry.user}`} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${entry.isMe ? 'bg-gradient-to-r from-teal-700 to-emerald-700 font-semibold text-white' : 'bg-stone-50 dark:bg-stone-800'}`}>
-                                <span className="flex min-w-0 items-center gap-2">
-                                    <span className="w-6 shrink-0 text-center font-bold text-gold">{['🥇', '🥈', '🥉'][entry.rank - 1]}</span>
-                                    <span className={`truncate ${entry.isMe ? 'text-white' : 'text-stone-700 dark:text-stone-300'}`}>{entry.user}</span>
-                                    {entry.isMe && <span className="shrink-0 text-xs text-teal-100">{t.isYou}</span>}
-                                </span>
-                                <span className={`ml-2 shrink-0 font-mono text-xs font-semibold ${entry.isMe ? 'text-white' : 'text-teal-700 dark:text-teal-300'}`}>{entry.correct}</span>
-                            </li>
-                        ))}
-                    </ol>
-                    {myRank && (
-                        <p className="mt-3 text-center text-xs font-medium text-stone-400 dark:text-stone-500">
-                            {t.yourRank} : n°{myRank}
+                <div className="space-y-5">
+                <button
+                    type="button"
+                    onClick={() => onStart(count, type)}
+                    className="group w-full rounded-2xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.99] dark:from-teal-600 dark:to-emerald-600"
+                >
+                    <span className="flex items-center justify-center gap-2">
+                        <svg className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        {t.start}
+                    </span>
+                </button>
+
+                {weeklyTop?.length > 0 && (
+                    <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
+                        <p className="flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.16em] text-gold">
+                            <span aria-hidden="true">🏆</span> <span>—</span> {t.weeklyTop} <span>—</span>
                         </p>
-                    )}
+                        <ol className="mt-3 space-y-1.5">
+                            {weeklyTop.slice(0, 3).map((entry) => (
+                                <li key={`${entry.rank}-${entry.user}`} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${entry.isMe ? 'bg-gradient-to-r from-teal-700 to-emerald-700 font-semibold text-white' : 'bg-stone-50 dark:bg-stone-800'}`}>
+                                    <span className="flex min-w-0 items-center gap-2">
+                                        <span className="w-6 shrink-0 text-center font-bold text-gold">{['🥇', '🥈', '🥉'][entry.rank - 1]}</span>
+                                        <span className={`truncate ${entry.isMe ? 'text-white' : 'text-stone-700 dark:text-stone-300'}`}>{entry.user}</span>
+                                        {entry.isMe && <span className="shrink-0 text-xs text-teal-100">{t.isYou}</span>}
+                                    </span>
+                                    <span className={`ml-2 shrink-0 font-mono text-xs font-semibold ${entry.isMe ? 'text-white' : 'text-teal-700 dark:text-teal-300'}`}>{entry.correct}</span>
+                                </li>
+                            ))}
+                        </ol>
+                        {myRank && (
+                            <p className="mt-3 text-center text-xs font-medium text-stone-400 dark:text-stone-500">
+                                {t.yourRank} : n°{myRank}
+                            </p>
+                        )}
+                    </div>
+                )}
                 </div>
-            )}
-
-            <button
-                type="button"
-                onClick={() => onStart(count, type)}
-                className="group w-full rounded-2xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.99] dark:from-teal-600 dark:to-emerald-600"
-            >
-                <span className="flex items-center justify-center gap-2">
-                    <svg className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
-                    {t.start}
-                </span>
-            </button>
+                </div>
         </div>
     );
 }
@@ -525,7 +531,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
     };
 
     return (
-        <div className="mx-auto max-w-2xl space-y-6">
+        <div className="mx-auto w-full max-w-5xl space-y-6">
             <div className="flex items-center justify-between">
                 <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-700 dark:bg-teal-900/30 dark:text-teal-400">
                     {t.question} {currentIdx + 1} {t.of} {questions.length}
@@ -547,7 +553,12 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
             <ProgressBar current={currentIdx + 1} total={questions.length} />
 
             <div key={question.id} className="space-y-6">
-                <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-b from-white to-stone-50 p-6 shadow-sm dark:border-stone-700 dark:from-stone-900 dark:to-stone-900/50">
+                <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:items-start lg:gap-8">
+                    <div
+                        className={`relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-b from-white to-stone-50 p-6 shadow-sm dark:border-stone-700 dark:from-stone-900 dark:to-stone-900/50 ${
+                            isListType ? '' : 'lg:sticky lg:top-6'
+                        }`}
+                    >
                     <HeroCorners className="stroke-gold-soft" />
                     <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-700 to-emerald-700 shadow-inner">
                         <svg className="h-5 w-5 text-gold-soft" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -564,7 +575,8 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                     </p>
                 </div>
 
-                {isListType ? (
+                    <div className="space-y-6">
+                        {isListType ? (
                     <SurahListPicker surahs={surahs} lang={lang} selectedId={selectedId} onSelect={selectOption} />
                 ) : (
                     <div className="space-y-3">
@@ -573,7 +585,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                                 key={`${question.id}-${opt.id}`}
                                 type="button"
                                 onClick={() => selectOption(opt.id)}
-                                className={`w-full rounded-xl border-2 px-5 py-4 transition-all duration-200 active:scale-[0.99] ${optionClass(opt.id)} ${optionLabelClass(opt.id)} ${isRevealed ? 'py-6 text-center text-xl font-bold' : 'font-arabic'} text-right ${isRevealed ? 'text-center' : ''} ${validated && opt.id === question.correctOptionId ? 'animate-[popIn_0.35s_ease]' : ''} ${validated && opt.id === selectedId && !isCorrect ? 'animate-[shake_0.4s_ease]' : ''}`}
+                                className={`w-full rounded-xl border-2 px-5 py-3.5 transition-all duration-200 active:scale-[0.99] ${optionClass(opt.id)} ${optionLabelClass(opt.id)} ${isRevealed ? 'py-6 text-center text-xl font-bold' : 'font-arabic'} text-right ${isRevealed ? 'text-center' : ''} ${validated && opt.id === question.correctOptionId ? 'animate-[popIn_0.35s_ease]' : ''} ${validated && opt.id === selectedId && !isCorrect ? 'animate-[shake_0.4s_ease]' : ''}`}
                                 style={!validated ? { animation: `fadeInUp 0.3s ease ${i * 70}ms backwards` } : undefined}
                             >
                                 <span className="flex items-center justify-between gap-3">
@@ -626,7 +638,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                             type="button"
                             onClick={handleValidate}
                             disabled={!selectedId}
-                            className="flex-1 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-4 font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 dark:from-teal-600 dark:to-emerald-600"
+                            className="flex-1 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-3.5 font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 dark:from-teal-600 dark:to-emerald-600"
                         >
                             {t.pressToValidate}
                         </button>
@@ -634,7 +646,7 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                         <button
                             type="button"
                             onClick={handleNext}
-                            className="flex-1 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-4 font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 dark:from-teal-600 dark:to-emerald-600"
+                            className="flex-1 rounded-xl bg-gradient-to-r from-teal-700 to-emerald-700 px-5 py-3.5 font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 dark:from-teal-600 dark:to-emerald-600"
                         >
                             <span className="flex items-center justify-center gap-2">
                                 {isLast ? t.finish : t.next}
@@ -644,6 +656,8 @@ function PlayScreen({ questions, t, surahs, lang, onFinish }) {
                             </span>
                         </button>
                     )}
+                </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -842,7 +856,8 @@ export default function Quiz({ isLoggedIn, bestScore, weeklyTop, myRank, surahs 
 
     return (
         <AppLayout>
-            <div className="px-4 py-8 sm:px-6 lg:px-8">
+            <div className="px-4 py-8 sm:px-6 lg:px-8 lg:-mt-8 lg:flex lg:min-h-[calc(100dvh-4rem)] lg:flex-col lg:overflow-y-auto">
+                <div className="w-full lg:my-auto">
                 {screen === 'config' && (
                     <ConfigScreen t={t} onStart={handleStart} error={error} weeklyTop={weeklyTop} myRank={myRank} />
                 )}
@@ -863,6 +878,7 @@ export default function Quiz({ isLoggedIn, bestScore, weeklyTop, myRank, surahs 
                         onHome={() => router.get('/')}
                     />
                 )}
+                </div>
             </div>
         </AppLayout>
     );

@@ -6,6 +6,7 @@ use App\Models\Ayah;
 use App\Models\Surah;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class ImportQuran extends Command
 {
@@ -167,6 +168,7 @@ class ImportQuran extends Command
         $arEdition = collect($editions)->firstWhere('edition.identifier', 'quran-uthmani');
 
         $frNames = $this->frenchNames();
+        $slugs = $this->slugs();
 
         Surah::updateOrCreate(
             ['number' => $info['number']],
@@ -174,6 +176,7 @@ class ImportQuran extends Command
                 'name_ar' => $info['name'],
                 'name_en' => $info['englishNameTranslation'] ?? $info['englishName'],
                 'name_fr' => $frNames[$info['number']] ?? $info['englishNameTranslation'] ?? $info['englishName'],
+                'slug' => $slugs[$info['number']] ?? Str::slug($info['englishNameTranslation'] ?? $info['englishName']),
                 'revelation_type' => $info['revelationType'],
                 'ayah_count' => $info['numberOfAyahs'],
             ]
@@ -181,7 +184,7 @@ class ImportQuran extends Command
     }
 
     /**
-     * Liste des 114 noms français des sourates (titres Hamidullah).
+     * Insérer les versets d'une sourate
      */
     private function frenchNames(): array
     {
@@ -191,8 +194,15 @@ class ImportQuran extends Command
     }
 
     /**
-     * Insérer les versets d'une sourate
+     * Liste des 114 slugs canoniques des sourates.
      */
+    private function slugs(): array
+    {
+        $data = json_decode((string) file_get_contents(database_path('data/surah_slugs.json')), true);
+
+        return is_array($data) ? $data : [];
+    }
+
     private function insertAyahs(array $editions, int $surahNumber): int
     {
         $arEdition = collect($editions)->firstWhere('edition.identifier', 'quran-uthmani');

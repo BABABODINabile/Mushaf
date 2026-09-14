@@ -1,6 +1,8 @@
 services:
     app:
         image: ghcr.io/bababodinabile/mushaf:latest
+        container_name: mushaf_app_container
+        build: .
         restart: unless-stopped
         ports:
             - '127.0.0.1:8090:80'
@@ -15,19 +17,6 @@ services:
             timeout: 5s
             retries: 5
             start_period: 20s
-
-    scheduler:
-        image: ghcr.io/bababodinabile/mushaf:latest
-        restart: unless-stopped
-        command: php artisan schedule:work --no-interaction
-        env_file: .env
-        extra_hosts:
-            - host.docker.internal:host-gateway
-        volumes:
-            - mushaf_storage:/var/www/html/storage
-        depends_on:
-            app:
-                condition: service_started
 
 volumes:
     mushaf_storage:

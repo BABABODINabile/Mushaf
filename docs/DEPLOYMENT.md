@@ -14,8 +14,7 @@ Navigateur ─→ Nginx hôte ─→ proxy_pass 127.0.0.1:8090 ─→ Container 
                     └─── autre vhost (footballmanager, learn, api) existants               ┘
 ```
 
-- `app` : sert HTTP sur `127.0.0.1:8090` (nginx interne + php-fpm, gardés vivants par supervisord).
-- `scheduler` : même image, exécute `php artisan schedule:work` (rappels email 7h, stats 23h55, purge jobs).
+- `app` : sert HTTP sur `127.0.0.1:8090` (nginx interne + php-fpm, gardés vivants par supervisord). Les tâches planifiées (`send-reminders`, `aggregate-stats`, `queue:prune-failed`) peuvent être déclenchées à la main via l'interface admin ou un `schedule:work` optionnel.
 - MySQL : celui du serveur hôte ; le container y accède via `host.docker.internal`.
 - Les assets/fichiers volatiles persistent dans le volume `mushaf_storage` (sessions, caches, logs).
 
@@ -196,11 +195,27 @@ Vérifier :
 | Besoin | Commande (sur le serveur, `cd /opt/mushaf`) |
 |---|---|
 | Voir les logs | `docker compose logs -f --tail=100 app` |
-| Voir les logs du scheduler | `docker compose logs -f scheduler` |
 | Redémarrer l'app | `docker compose restart app` |
 | Voir l'état | `docker compose ps` |
 | Lancer une commande artisan | `docker compose run --rm --no-deps --entrypoint php app artisan tinker` |
 | Vider / regénérer les caches | `docker compose restart app` (l'entrypoint exécute `optimize`) |
+| Créer / mettre à jour le compte admin | `docker compose run --rm --no-deps --entrypoint php app artisan db:seed --class=AdminUserSeeder` |
+
+### Déploiement manuel (sans CI)
+
+Quand GitHub Actions n'est pas disponible, utilisez `deploy.sh` côté serveur (cloné dans `/var/www/projet_islam`). Le script :
+- se localise automatiquement (`BASH_SOURCE`)
+- `git pull --ff-only origin main`
+- vérifie/génère `APP_KEY`
+- `docker compose build app`
+- `docker compose up -d`
+- `migrate --force`
+- import Coran + Hadiths **seulement si la base est vide**
+- seed le compte admin (`ADMIN_EMAIL` / `ADMIN_PASSWORD` du `.env`)
+- vérifie `/up`
+- clear + recache les configs
+
+Prérequis serveur (déjà décrit en §1) : MySQL (`bind-address=0.0.0.0`, UFW `172.16.0.0/12 → 3306`), `.env` avec `DB_HOST=host.docker.internal`, vhost Nginx → `127.0.0.1:8090`, et `container_name: mushaf_app_container` dans le compose.
 
 ### Rollback
 

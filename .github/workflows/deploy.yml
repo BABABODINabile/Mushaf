@@ -98,7 +98,7 @@ jobs:
                       set -e
                       cd /opt/mushaf
 
-                      docker compose pull app scheduler
+                      docker compose pull app
 
                       docker compose up -d
 

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Surah;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Surah>
@@ -19,6 +20,7 @@ class SurahFactory extends Factory
             'name_ar' => fake()->word(),
             'name_en' => fake()->word(),
             'name_fr' => fake()->word(),
+            'slug' => fn (array $attributes): string => Str::slug($attributes['name_fr'].'-'.$attributes['number']),
             'revelation_type' => fake()->randomElement(['Meccan', 'Medinan']),
             'ayah_count' => fake()->numberBetween(3, 286),
         ];

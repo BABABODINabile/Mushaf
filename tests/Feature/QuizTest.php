@@ -51,6 +51,7 @@ class QuizTest extends TestCase
         ];
 
         foreach ($surahData as $s) {
+            $s['slug'] = 'surah-'.$s['number'];
             Surah::create($s);
         }
 

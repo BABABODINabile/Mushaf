@@ -31,6 +31,7 @@ class FixSurahNamesTest extends TestCase
     {
         Surah::create([
             'number' => 1,
+            'slug' => 'surah-1',
             'name_ar' => 'الفاتحة',
             'name_en' => 'Al-Faatiha',
             'name_fr' => 'The Opening',
@@ -39,6 +40,7 @@ class FixSurahNamesTest extends TestCase
         ]);
         Surah::create([
             'number' => 2,
+            'slug' => 'surah-2',
             'name_ar' => 'البقرة',
             'name_en' => 'Al-Baqara',
             'name_fr' => 'The Cow',
@@ -56,6 +58,7 @@ class FixSurahNamesTest extends TestCase
     {
         Surah::create([
             'number' => 112,
+            'slug' => 'surah-112',
             'name_ar' => 'الإخلاص',
             'name_en' => 'Al-Ikhlas',
             'name_fr' => 'Sincerity',

@@ -5,6 +5,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | Applies to | Rule file |
 | --- | --- |
 | app/Http/Controllers/QuizController.php | .ai/rules/controllers.md |
+| tests/**, database/factories/*.php | .ai/rules/factories.md |
 | git/** | .ai/rules/git.md |
 | resources/js/hooks/useSelectable.js | .ai/rules/hooks.md |
 | app/Jobs/** | .ai/rules/jobs.md |

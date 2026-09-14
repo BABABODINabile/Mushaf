@@ -105,4 +105,30 @@ class AdminCommandTest extends TestCase
         $this->assertFalse($run->isRunning());
         $this->assertNotNull($run->finished_at);
     }
+
+    public function test_index_reconciles_stale_running_runs_from_log(): void
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        $logPath = storage_path('logs/commands/test-reconcile.log');
+        file_put_contents($logPath, 'Rappels envoyés !'.PHP_EOL.'exit:0');
+        $run = CommandRun::create([
+            'command_key' => 'send-reminders',
+            'status' => 'running',
+            'log_path' => $logPath,
+            'started_at' => now()->subHour(),
+        ]);
+
+        $this->actingAs($user)->get('/admin/commands')
+            ->assertStatus(200)
+            ->assertInertia(function ($page) use ($run) {
+                $serialized = collect($page->toArray()['props']['runs'])->firstWhere('id', $run->id);
+                $this->assertSame('success', $serialized['status']);
+                $this->assertSame(0, $serialized['exit_code']);
+            });
+
+        $run->refresh();
+        $this->assertSame('success', $run->status);
+        $this->assertSame(0, $run->exit_code);
+        $this->assertNotNull($run->finished_at);
+    }
 }

@@ -19,6 +19,10 @@ class AdminCommandController extends Controller
      */
     public function index(): Response
     {
+        // Réconcilier les runs encore marqués « running » depuis leur log
+        // (un run terminé pendant que la page était fermée resterait bloqué sinon).
+        CommandRun::running()->get()->each(fn (CommandRun $run) => $this->runner->refresh($run));
+
         $runs = CommandRun::orderByDesc('id')
             ->limit(10)
             ->get()

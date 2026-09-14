@@ -64,14 +64,14 @@ ufw enable
 mkdir -p /opt/mushaf
 ```
 
-Placer le fichier `.env` (jamais commité) dans `/opt/mushaf/.env`. Partir de `.env.example` du repo et adapter :
+Placer le fichier `.env` (jamais commité) dans le dossier du projet. Partir de `.env.example` et adapter :
 
 ```env
 APP_NAME=Mushaf
 APP_ENV=production
 APP_KEY=base64:...            # générer : php artisan key:generate --show
 APP_DEBUG=false
-APP_URL=http://<IP_du_serveur>  # https://votre-domaine.fr dès que le domaine est en place
+APP_URL=http://<IP_du_serveur>:8090   # ⚠️ doit inclure le port (:8090 pour accès direct, :80/443 avec nginx vhost)
 
 LOG_CHANNEL=stderr            # logs vers stdout -> docker compose logs
 
@@ -85,6 +85,10 @@ DB_PASSWORD=UN_MOT_DE_PASSE_FORT
 SESSION_DRIVER=database
 CACHE_STORE=database
 QUEUE_CONNECTION=database
+
+ADMIN_NAME=Administrateur Mushaf
+ADMIN_EMAIL=zabilesoft@gmail.com
+ADMIN_PASSWORD=password       # modifier après le premier seed
 
 MAIL_MAILER=smtp              # remplacer 'log' par un vrai SMTP pour les rappels email
 MAIL_HOST=smtp.votre-fournisseur.fr
@@ -103,6 +107,8 @@ CLOUDFLARE_R2_ENDPOINT=...
 CLOUDFLARE_R2_BUCKET=...
 CLOUDFLARE_R2_PUBLIC_URL=...
 ```
+
+> ⚠️ `APP_URL` **doit inclure le port** (`:8090` en accès direct). Sinon les assets sont chargés depuis le port par défaut (80) → erreurs CORS et 404.
 
 > ⚠️ En accès par IP seule : Google OAuth refuse les URL sans domaine → le login Google ne fonctionnera pas tant qu'un domaine + SSL ne sont pas configurés. Créez votre compte admin via le seeder (section 3).
 

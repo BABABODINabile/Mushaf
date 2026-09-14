@@ -14,8 +14,10 @@ Navigateur ─→ Nginx hôte ─→ proxy_pass 127.0.0.1:8090 ─→ Container 
                     └─── autre vhost (footballmanager, learn, api) existants               ┘
 ```
 
-- `app` : sert HTTP sur `127.0.0.1:8090` (nginx interne + php-fpm, gardés vivants par supervisord). Les tâches planifiées (`send-reminders`, `aggregate-stats`, `queue:prune-failed`) peuvent être déclenchées à la main via l'interface admin ou un `schedule:work` optionnel.
+- `app` : sert HTTP sur le port **8090** de toutes les interfaces du VPS (accès direct via `http://<IP>:8090`, temporaire).
 - MySQL : celui du serveur hôte ; le container y accède via `host.docker.internal`.
+
+> **Recommandé pour la prod** : ajouter un vhost Nginx (port 80 → `127.0.0.1:8090`) + SSL (`certbot --nginx`) pour ne pas exposer le port 8090 publiquement. Voir §1.4.
 - Les assets/fichiers volatiles persistent dans le volume `mushaf_storage` (sessions, caches, logs).
 
 ---
@@ -104,7 +106,9 @@ CLOUDFLARE_R2_PUBLIC_URL=...
 
 > ⚠️ En accès par IP seule : Google OAuth refuse les URL sans domaine → le login Google ne fonctionnera pas tant qu'un domaine + SSL ne sont pas configurés. Créez votre compte admin via le seeder (section 3).
 
-### 1.4 Vhost Nginx hôte
+### 1.4 Vhost Nginx hôte (recommandé pour la prod)
+
+Même gabarit que vos autres vhosts (ex. `learn.zabilesoft.com`) — remplace l'accès direct par IP :8090 :
 
 Même gabarit que vos autres vhosts (ex. `learn.zabilesoft.com`) :
 

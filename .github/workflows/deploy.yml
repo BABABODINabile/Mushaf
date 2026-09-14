@@ -98,8 +98,6 @@ jobs:
                       set -e
                       cd /opt/mushaf
 
-                      echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
-
                       docker compose pull app scheduler
 
                       docker compose up -d

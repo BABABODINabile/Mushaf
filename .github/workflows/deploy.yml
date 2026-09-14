@@ -1,0 +1,113 @@
+name: Deploy Mushaf
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+    packages: write
+
+jobs:
+    test:
+        name: Tests & lint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: mbstring, intl, pdo_mysql, gd
+                  coverage: none
+
+            - name: Install dependencies
+              run: composer install --no-interaction --prefer-dist --no-progress
+
+            - name: Prepare env
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate --ansi
+
+            - name: Code style (Pint)
+              run: vendor/bin/pint --test --no-interaction
+
+            - name: Tests (PHPUnit)
+              run: php artisan test --compact --no-interaction
+
+    deploy:
+        name: Build image & deploy Contabo
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build & push image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  push: true
+                  tags: |
+                      ghcr.io/${{ lower(github.repository) }}:latest
+                      ghcr.io/${{ lower(github.repository) }}:main-${{ github.sha }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Create app dir on server
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  script: mkdir -p /opt/mushaf
+
+            - name: Upload compose file
+              uses: appleboy/scp-action@v0.1.10
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  source: docker-compose.yml
+                  target: /opt/mushaf
+
+            - name: Deploy
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  script: |
+                      set -e
+                      cd /opt/mushaf
+
+                      echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+
+                      docker compose pull app scheduler
+
+                      docker compose up -d
+
+                      docker compose run --rm --no-deps --entrypoint php app artisan migrate --force --no-interaction
+
+                      if command -v curl >/dev/null 2>&1; then
+                        curl -fsS http://127.0.0.1:8090/up && echo "✓ Mushaf déployé"
+                      else
+                        wget -qO- http://127.0.0.1:8090/up && echo "✓ Mushaf déployé"
+                      fi

@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Derrière le reverse-proxy Nginx hôte (schémas https corrects dans les URLs)
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             EnsureUserIsActive::class,
             TrackActivity::class,

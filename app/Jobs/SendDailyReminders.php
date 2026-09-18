@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Mail\ReminderMail;
-use App\Models\Ayah;
 use App\Models\Hadith;
 use App\Models\Subscription;
+use App\Services\DailyContent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
@@ -86,28 +86,11 @@ class SendDailyReminders
     }
 
     /**
-     * Récupérer un verset aléatoire du Coran.
-     * On pioche parmi les versets connus pour être populaires/inspirants.
+     * Récupérer le verset du jour (liste partagée avec le site).
      */
     private function fetchVerse(string $lang): ?array
     {
-        // Versets référencés dans le verset du jour (réutilisés pour les rappels)
-        $refs = [
-            [1, 1], [2, 255], [94, 5], [65, 3], [13, 28],
-            [2, 286], [39, 53], [3, 159], [55, 13], [20, 25],
-            [16, 97], [29, 69], [3, 139], [2, 152], [9, 40],
-            [73, 8], [87, 19], [93, 5], [103, 3], [112, 1],
-        ];
-
-        // Piocher un verset basé sur le jour de l'année
-        $index = now()->dayOfYear % count($refs);
-        [$surahNumber, $ayahNumber] = $refs[$index];
-
-        $ayah = Ayah::query()
-            ->where('number_in_surah', $ayahNumber)
-            ->whereHas('surah', fn ($q) => $q->where('number', $surahNumber))
-            ->with('surah')
-            ->first();
+        $ayah = DailyContent::todayAyah();
 
         if (! $ayah) {
             return null;

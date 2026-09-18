@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\AudioHistory;
-use App\Models\Ayah;
 use App\Models\Hadith;
 use App\Models\QuizScore;
 use App\Models\ReadingDay;
 use App\Models\ReadingHistory;
 use App\Models\Surah;
+use App\Services\DailyContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -54,20 +54,7 @@ class PageController extends Controller
      */
     private function verseOfDayPayload(): array
     {
-        $refs = [
-            [1, 1], [2, 255], [94, 5], [65, 3], [13, 28],
-            [2, 286], [39, 53], [3, 159], [55, 13], [20, 25],
-            [16, 97], [29, 69], [3, 139], [2, 152], [9, 40],
-        ];
-
-        $index = intdiv(now()->timestamp, 86400) % count($refs);
-        [$surahNumber, $ayahNumber] = $refs[$index];
-
-        $ayah = Ayah::query()
-            ->where('number_in_surah', $ayahNumber)
-            ->whereHas('surah', fn ($q) => $q->where('number', $surahNumber))
-            ->with('surah')
-            ->first();
+        $ayah = DailyContent::todayAyah();
 
         if (! $ayah) {
             abort(404, 'Verset introuvable.');

@@ -2,6 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../../components/AppLayout';
 import Medallion from '../../components/Medallion';
+import PasswordInput from '../../components/PasswordInput';
 
 export default function ResetPassword({ token, email }) {
     const { errors } = usePage().props;
@@ -64,9 +65,8 @@ export default function ResetPassword({ token, email }) {
                         <label htmlFor="password" className="mb-1 block text-sm font-medium text-stone-700">
                             Nouveau mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             name="password"
                             value={values.password}
                             onChange={handleChange}
@@ -82,9 +82,8 @@ export default function ResetPassword({ token, email }) {
                         <label htmlFor="password_confirmation" className="mb-1 block text-sm font-medium text-stone-700">
                             Confirmer le mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password_confirmation"
-                            type="password"
                             name="password_confirmation"
                             value={values.password_confirmation}
                             onChange={handleChange}

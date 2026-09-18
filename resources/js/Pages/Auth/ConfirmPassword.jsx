@@ -2,6 +2,7 @@ import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../../components/AppLayout';
 import Medallion from '../../components/Medallion';
+import PasswordInput from '../../components/PasswordInput';
 
 export default function ConfirmPassword() {
     const { errors } = usePage().props;
@@ -37,9 +38,8 @@ export default function ConfirmPassword() {
                         <label htmlFor="password" className="mb-1 block text-sm font-medium text-stone-700">
                             Mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

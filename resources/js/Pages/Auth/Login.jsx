@@ -2,6 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../../components/AppLayout';
 import Medallion from '../../components/Medallion';
+import PasswordInput from '../../components/PasswordInput';
 
 export default function Login() {
     const { errors } = usePage().props;
@@ -79,9 +80,8 @@ export default function Login() {
                         <label htmlFor="password" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             name="password"
                             value={values.password}
                             onChange={handleChange}

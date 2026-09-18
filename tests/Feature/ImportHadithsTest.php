@@ -50,4 +50,37 @@ class ImportHadithsTest extends TestCase
         $this->assertSame($sample['narrator'], $hadith->narrator);
         $this->assertSame($sample['grade'], $hadith->grade);
     }
+
+    public function test_import_strips_html_tags_from_texts(): void
+    {
+        Http::fake([
+            '*/editions/ara-nawawi.json' => Http::response([
+                'hadiths' => [
+                    [
+                        'hadithnumber' => 1,
+                        'text' => 'نَصُّ الْحَدِيثِ .<br>[رَوَاهُ الْبُخَارِيُّ]',
+                        'reference' => ['book' => 1, 'hadith' => 1],
+                    ],
+                ],
+            ]),
+            '*/editions/eng-nawawi.json' => Http::response([
+                'hadiths' => [
+                    [
+                        'hadithnumber' => 1,
+                        'text' => 'The text of the hadith.<br />Narrated by al-Bukhari.',
+                        'reference' => ['book' => 1, 'hadith' => 1],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $this->artisan('mushaf:import-hadiths')->assertSuccessful();
+
+        $hadith = Hadith::where('collection', 'nawawi')->where('hadith_number', 1)->first();
+
+        $this->assertStringNotContainsString('<', $hadith->text_ar);
+        $this->assertStringNotContainsString('<', $hadith->text_en);
+        $this->assertStringContainsString('نَصُّ الْحَدِيثِ . [رَوَاهُ الْبُخَارِيُّ]', $hadith->text_ar);
+        $this->assertSame('The text of the hadith. Narrated by al-Bukhari.', $hadith->text_en);
+    }
 }

@@ -108,10 +108,10 @@ class ImportHadiths extends Command
                     'chapter_number' => 1,
                     'chapter_name_ar' => 'الأربعون النووية',
                     'chapter_name_en' => 'Forty Hadith of an-Nawawi',
-                    'title' => $frenchHadith['title'] ?? null,
-                    'text_ar' => $arabicHadith['text'],
-                    'text_en' => $englishHadith['text'] ?? '',
-                    'text_fr' => $frenchHadith['text_fr'] ?? null,
+                    'title' => $this->cleanText($frenchHadith['title'] ?? null),
+                    'text_ar' => $this->cleanText($arabicHadith['text']),
+                    'text_en' => $this->cleanText($englishHadith['text'] ?? ''),
+                    'text_fr' => $this->cleanText($frenchHadith['text_fr'] ?? null),
                     'grade' => $frenchHadith['grade'] ?? null,
                     'narrator' => $frenchHadith['narrator'] ?? null,
                     'is_featured' => $hadithNumber <= 5, // Les 5 premiers mis en avant
@@ -173,5 +173,22 @@ class ImportHadiths extends Command
         $data = json_decode($content, true);
 
         return json_last_error() === JSON_ERROR_NONE ? $data : null;
+    }
+
+    /**
+     * Nettoyer un texte importé (balises <br>, HTML résiduel, entités, espaces multiples)
+     */
+    private function cleanText(?string $text): ?string
+    {
+        if ($text === null) {
+            return null;
+        }
+
+        $text = preg_replace('#<br\s*/?>#i', ' ', $text);
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/\s+/u', ' ', $text);
+
+        return trim($text);
     }
 }

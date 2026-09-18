@@ -5,130 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mushaf — Votre {{ $contentType === 'verset' ? 'verset' : 'hadith' }} du jour</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f7f2e6;font-family:'Georgia','Times New Roman',serif;">
+<body style="margin:0;padding:0;background-color:#f7f2e6;">
+
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f7f2e6;">
         <tr>
-            <td align="center" style="padding:40px 20px;">
+            <td align="center" style="padding:32px 16px;">
 
-                {{-- Container --}}
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#fbf8ee;border-radius:14px;overflow:hidden;border:1px solid #d9c797;">
-
-                    {{-- Header --}}
+                {{-- Liseré doré inset (équivalent du trait doré de la carte) --}}
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;border:1px solid rgba(182,144,63,0.55);padding:9px;">
                     <tr>
-                        <td style="background-color:#132039;padding:28px 32px;text-align:center;border-bottom:3px solid #b6903f;">
-                            <div style="color:#b6903f;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">
-                                — Rappel quotidien —
-                            </div>
-                            <div style="font-size:28px;color:#f7f2e6;font-weight:bold;font-family:Georgia,serif;">
-                                Mushaf
-                            </div>
-                        </td>
-                    </tr>
+                        <td style="padding:0;">
 
-                    {{-- Body --}}
-                    <tr>
-                        <td style="padding:36px 32px;">
+                            {{-- Carte papier --}}
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f7f2e6;">
 
-                            {{-- Greeting --}}
-                            <div style="font-size:15px;color:#132039;margin-bottom:24px;line-height:1.6;">
-                                Assalamu alaykum,
-                            </div>
-
-                            @if($contentType === 'verset')
-                                {{-- Verse of the day --}}
-                                <div style="text-align:center;margin-bottom:28px;">
-                                    <div style="font-size:11px;color:#b6903f;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">
-                                        — Verset du jour —
-                                    </div>
-
-                                    {{-- Arabic text --}}
-                                    <div style="font-size:24px;color:#132039;line-height:2.2;direction:rtl;text-align:center;margin-bottom:20px;font-family:'Amiri','Georgia',serif;">
-                                        {{ $content['text_ar'] }}
-                                    </div>
-
-                                    {{-- Translation --}}
-                                    @if(!empty($content['translation']))
-                                        <div style="font-size:15px;color:#4a4233;line-height:1.7;font-style:italic;margin-bottom:16px;">
-                                            « {{ $content['translation'] }} »
+                                {{-- Brand + coins supérieurs --}}
+                                <tr>
+                                    <td width="96" style="width:96px;padding:0;">
+                                        <div style="width:96px;height:96px;background-color:#132039;border-bottom-right-radius:96px;border-right:2px solid #b6903f;border-bottom:2px solid #b6903f;box-sizing:border-box;">
+                                            <div style="padding:24px 0 0 16px;color:#b6903f;font-size:12px;line-height:19px;letter-spacing:5px;text-align:left;font-family:'Georgia',serif;">◆ ◆ ◆</div>
                                         </div>
-                                    @endif
-
-                                    {{-- Reference --}}
-                                    <div style="font-size:13px;color:#8a7f5e;">
-                                        {{ $content['ref'] }}
-                                    </div>
-                                </div>
-                            @else
-                                {{-- Hadith of the day --}}
-                                <div style="text-align:center;margin-bottom:28px;">
-                                    <div style="font-size:11px;color:#b6903f;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">
-                                        — Hadith du jour —
-                                    </div>
-                                    @if(!empty($content['title']))
-                                        <div style="font-size:14px;color:#b6903f;font-weight:bold;margin-bottom:12px;">
-                                            {{ $content['title'] }}
+                                    </td>
+                                    <td align="center" valign="bottom" style="padding:0 0 12px 0;">
+                                        <div style="color:#b6903f;font-size:13px;letter-spacing:6px;line-height:1;font-family:'Georgia',serif;">◆</div>
+                                        <div style="color:#b6903f;font-size:27px;font-weight:bold;letter-spacing:2px;line-height:1.15;font-family:'Georgia','Times New Roman',serif;">Mushaf</div>
+                                        <div style="color:#b6903f;font-size:13px;letter-spacing:6px;line-height:1;font-family:'Georgia',serif;">◆</div>
+                                    </td>
+                                    <td width="96" style="width:96px;padding:0;">
+                                        <div style="width:96px;height:96px;background-color:#132039;border-bottom-left-radius:96px;border-left:2px solid #b6903f;border-bottom:2px solid #b6903f;box-sizing:border-box;">
+                                            <div style="padding:24px 16px 0 0;color:#b6903f;font-size:12px;line-height:19px;letter-spacing:5px;text-align:right;font-family:'Georgia',serif;">◆ ◆ ◆</div>
                                         </div>
-                                    @endif
+                                    </td>
+                                </tr>
 
-                                    {{-- Arabic text --}}
-                                    <div style="font-size:20px;color:#132039;line-height:2;direction:rtl;text-align:center;margin-bottom:16px;font-family:'Amiri','Georgia',serif;">
-                                        {{ $content['text_ar'] }}
-                                    </div>
+                                {{-- Contenu --}}
+                                <tr>
+                                    <td colspan="3" style="padding:26px 40px 30px 40px;">
 
-                                    {{-- Translation --}}
-                                    @if(!empty($content['translation']))
-                                        <div style="font-size:15px;color:#4a4233;line-height:1.7;font-style:italic;margin-bottom:16px;">
-                                            « {{ $content['translation'] }} »
+                                        @if($contentType === 'verset')
+                                            <div style="text-align:center;margin-bottom:22px;">
+                                                <div style="font-size:11px;color:#b6903f;text-transform:uppercase;letter-spacing:2px;font-family:'Georgia',serif;">
+                                                    — Verset du jour —
+                                                </div>
+                                            </div>
+
+                                            <div style="font-size:24px;color:#17213a;line-height:2;direction:rtl;text-align:center;font-family:'Amiri','Geeza Pro',Georgia,serif;">
+                                                {{ $content['text_ar'] }}
+                                            </div>
+                                        @else
+                                            <div style="text-align:center;margin-bottom:22px;">
+                                                <div style="font-size:11px;color:#b6903f;text-transform:uppercase;letter-spacing:2px;font-family:'Georgia',serif;">
+                                                    — Hadith du jour —
+                                                </div>
+                                            </div>
+
+                                            @if(!empty($content['title']))
+                                                <div style="font-size:14px;color:#b6903f;font-weight:bold;text-align:center;margin-bottom:14px;font-family:'Georgia',serif;">
+                                                    {{ $content['title'] }}
+                                                </div>
+                                            @endif
+
+                                            <div style="font-size:21px;color:#17213a;line-height:2;direction:rtl;text-align:center;font-family:'Amiri','Geeza Pro',Georgia,serif;">
+                                                {{ $content['text_ar'] }}
+                                            </div>
+                                        @endif
+
+                                        {{-- Séparateur dégradé or --}}
+                                        <div style="height:2px;width:46%;margin:26px auto;background-color:#b6903f;background-image:linear-gradient(90deg,transparent,#b6903f 20%,#b6903f 80%,transparent);"></div>
+
+                                        {{-- Traduction --}}
+                                        @if(!empty($content['translation']))
+                                            <div style="font-size:15px;color:#2a2620;line-height:1.7;font-style:italic;text-align:center;font-family:'Georgia','Times New Roman',serif;">
+                                                « {{ $content['translation'] }} »
+                                            </div>
+                                        @endif
+
+                                        {{-- Référence --}}
+                                        <div style="font-size:14px;color:#132039;font-weight:bold;text-align:center;margin-top:24px;font-family:'Georgia',serif;">
+                                            {{ $content['ref'] }}
                                         </div>
-                                    @endif
 
-                                    {{-- Reference --}}
-                                    <div style="font-size:13px;color:#8a7f5e;">
-                                        {{ $content['ref'] }}
-                                    </div>
+                                        {{-- Narrateur --}}
+                                        @if(!empty($content['narrator']))
+                                            <div style="font-size:13px;color:#5a5346;font-style:italic;text-align:center;margin-top:8px;font-family:'Georgia',serif;">
+                                                {{ $content['narrator'] }}
+                                            </div>
+                                        @endif
 
-                                    @if(!empty($content['narrator']))
-                                        <div style="font-size:12px;color:#8a7f5e;margin-top:6px;">
-                                            {{ $content['narrator'] }}
+                                    </td>
+                                </tr>
+
+                                {{-- Footer MUSHAF.APP + coins inférieurs --}}
+                                <tr>
+                                    <td width="96" style="width:96px;padding:0;">
+                                        <div style="width:96px;height:96px;background-color:#132039;border-top-right-radius:96px;border-top:2px solid #b6903f;border-right:2px solid #b6903f;box-sizing:border-box;">
+                                            <div style="padding:16px 0 0 16px;color:#b6903f;font-size:12px;line-height:19px;letter-spacing:5px;text-align:left;font-family:'Georgia',serif;">◆ ◆ ◆</div>
                                         </div>
-                                    @endif
-                                </div>
-                            @endif
+                                    </td>
+                                    <td align="center" valign="middle" style="padding:0;">
+                                        <div style="color:#b6903f;font-size:13px;letter-spacing:3px;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">MUSHAF.APP
+                                        </div>
+                                    </td>
+                                    <td width="96" style="width:96px;padding:0;">
+                                        <div style="width:96px;height:96px;background-color:#132039;border-top-left-radius:96px;border-top:2px solid #b6903f;border-left:2px solid #b6903f;box-sizing:border-box;">
+                                            <div style="padding:16px 16px 0 0;color:#b6903f;font-size:12px;line-height:19px;letter-spacing:5px;text-align:right;font-family:'Georgia',serif;">◆ ◆ ◆</div>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                            {{-- Divider --}}
-                            <div style="height:2px;background:linear-gradient(90deg,transparent,#b6903f 15%,#b6903f 85%,transparent);margin:24px 0;"></div>
+                            </table>
 
-                            {{-- CTA --}}
-                            <div style="text-align:center;margin-bottom:16px;">
-                                <a href="{{ url('/coran') }}" style="display:inline-block;background-color:#b6903f;color:#132039;padding:12px 28px;border-radius:999px;text-decoration:none;font-size:14px;font-weight:bold;letter-spacing:0.5px;">
-                                    Ouvrir le Coran
+                            {{-- Désabonnement --}}
+                            <div style="text-align:center;padding:14px 0 2px 0;">
+                                <a href="{{ url('/rappels/unsubscribe/' . $subscription->token) }}" style="color:#8a7f5e;font-size:11px;text-decoration:underline;font-family:'Georgia',serif;">
+                                    Se désabonner
                                 </a>
                             </div>
 
-                            {{-- Closing --}}
-                            <div style="font-size:14px;color:#5a5346;text-align:center;line-height:1.6;">
-                                Que ce mot vous accompagne dans votre journée.
-                            </div>
-
                         </td>
                     </tr>
-
-                    {{-- Footer --}}
-                    <tr>
-                        <td style="background-color:#132039;padding:20px 32px;text-align:center;border-top:3px solid #b6903f;">
-                            <div style="font-size:12px;color:#f7f2e6;line-height:1.6;">
-                                <div>
-                                    Mushaf — Lecture et écoute du Coran.
-                                </div>
-                                <div style="margin-top:8px;">
-                                    <a href="{{ url('/rappels/unsubscribe/' . $subscription->token) }}" style="color:#b6903f;text-decoration:underline;">
-                                        Se désabonner
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
                 </table>
 
             </td>

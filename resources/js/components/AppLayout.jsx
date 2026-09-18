@@ -13,6 +13,7 @@ const i18n = {
         rappels: 'Rappels',
         quiz: 'Quiz',
         favoris: 'Favoris',
+        profil: 'Profil',
         search: 'Rechercher',
         login: 'Connexion',
         register: 'Inscription',
@@ -30,6 +31,7 @@ const i18n = {
         rappels: 'Reminders',
         quiz: 'Quiz',
         favoris: 'Favorites',
+        profil: 'Profile',
         search: 'Search',
         login: 'Log in',
         register: 'Sign up',
@@ -47,6 +49,7 @@ const i18n = {
         rappels: 'تذكير',
         quiz: 'اختبار',
         favoris: 'المفضلة',
+        profil: 'الملف',
         search: 'بحث',
         login: 'تسجيل الدخول',
         register: 'إنشاء حساب',
@@ -94,7 +97,12 @@ export default function AppLayout({ children }) {
         { label: t.quiz, href: '/quiz' },
         { label: t.rappels, href: '/rappels' },
     ];
-    const authNavItems = auth.user ? [{ label: t.favoris, href: '/favoris' }] : [];
+    const authNavItems = auth.user
+        ? [
+              { label: t.favoris, href: '/favoris' },
+              { label: t.profil, href: '/profile' },
+          ]
+        : [];
     const allNavItems = [...navItems, ...authNavItems];
 
     const tabClass = (href) =>

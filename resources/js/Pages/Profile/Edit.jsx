@@ -2,6 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '../../components/AppLayout';
 import { TrashIcon } from '../../components/Icons';
+import PasswordInput from '../../components/PasswordInput';
 import { useConfirm } from '../../components/ConfirmDialog';
 
 export default function Profile({ user }) {
@@ -57,19 +58,19 @@ export default function Profile({ user }) {
     return (
         <div className="mx-auto max-w-2xl space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-stone-900">Mon profil</h1>
-                <p className="mt-1 text-stone-500">Gérez vos informations personnelles.</p>
+                <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Mon profil</h1>
+                <p className="mt-1 text-stone-500 dark:text-stone-400">Gérez vos informations personnelles.</p>
             </div>
 
             {status && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">
                     {status === 'profile-updated' && 'Profil mis à jour avec succès.'}
                     {status === 'password-updated' && 'Mot de passe mis à jour avec succès.'}
                 </div>
             )}
 
             {/* Tabs */}
-            <div className="flex gap-1 rounded-xl bg-stone-100 p-1">
+            <div className="flex gap-1 rounded-xl bg-stone-100 p-1 dark:bg-stone-900">
                 {[
                     { key: 'profile', label: 'Profil' },
                     { key: 'password', label: 'Mot de passe' },
@@ -81,8 +82,8 @@ export default function Profile({ user }) {
                         onClick={() => setActiveTab(tab.key)}
                         className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition ${
                             activeTab === tab.key
-                                ? 'bg-white text-stone-900 shadow-sm'
-                                : 'text-stone-500 hover:text-stone-700'
+                                ? 'bg-white text-stone-900 shadow-sm dark:bg-stone-800 dark:text-stone-100'
+                                : 'text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
                         }`}
                     >
                         {tab.label}
@@ -92,9 +93,9 @@ export default function Profile({ user }) {
 
             {/* Profile tab */}
             {activeTab === 'profile' && (
-                <form onSubmit={handleProfileSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+                <form onSubmit={handleProfileSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900">
                     <div>
-                        <label htmlFor="name" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="name" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Nom
                         </label>
                         <input
@@ -102,11 +103,11 @@ export default function Profile({ user }) {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                         />
                     </div>
                     <div>
-                        <label htmlFor="email" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="email" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Email
                         </label>
                         <input
@@ -114,7 +115,7 @@ export default function Profile({ user }) {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                         />
                     </div>
                     <button
@@ -129,41 +130,38 @@ export default function Profile({ user }) {
 
             {/* Password tab */}
             {activeTab === 'password' && (
-                <form onSubmit={handlePasswordSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+                <form onSubmit={handlePasswordSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900">
                     <div>
-                        <label htmlFor="current_password" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="current_password" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Mot de passe actuel
                         </label>
-                        <input
+                        <PasswordInput
                             id="current_password"
-                            type="password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="password" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Nouveau mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                         />
                     </div>
                     <div>
-                        <label htmlFor="password_confirmation" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="password_confirmation" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Confirmer le mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="password_confirmation"
-                            type="password"
                             value={passwordConfirmation}
                             onChange={(e) => setPasswordConfirmation(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-teal-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                         />
                     </div>
                     <button
@@ -178,23 +176,22 @@ export default function Profile({ user }) {
 
             {/* Delete account tab */}
             {activeTab === 'delete' && (
-                <form onSubmit={handleDeleteAccount} className="space-y-4 rounded-2xl border border-red-200 bg-white p-6 shadow-sm">
+                <form onSubmit={handleDeleteAccount} className="space-y-4 rounded-2xl border border-red-200 bg-white p-6 shadow-sm dark:border-red-900/60 dark:bg-stone-900">
                     <div>
-                        <h3 className="text-lg font-semibold text-red-700">Supprimer mon compte</h3>
-                        <p className="mt-1 text-sm text-stone-500">
+                        <h3 className="text-lg font-semibold text-red-700 dark:text-red-400">Supprimer mon compte</h3>
+                        <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                             Cette action est irréversible. Toutes vos données seront supprimées.
                         </p>
                     </div>
                     <div>
-                        <label htmlFor="delete_password" className="mb-1 block text-sm font-medium text-stone-700">
+                        <label htmlFor="delete_password" className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
                             Confirmez avec votre mot de passe
                         </label>
-                        <input
+                        <PasswordInput
                             id="delete_password"
-                            type="password"
                             value={deletePassword}
                             onChange={(e) => setDeletePassword(e.target.value)}
-                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-red-500 focus:outline-none"
+                            className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-800 shadow-sm focus:border-red-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                             placeholder="Votre mot de passe"
                         />
                     </div>

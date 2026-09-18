@@ -125,7 +125,11 @@ export default function AdminLayout({ children }) {
                         {!collapsed && <span>{theme === 'nuit' ? 'Mode jour' : 'Mode nuit'}</span>}
                     </button>
 
-                    <div className={`mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 ${collapsed ? 'justify-center' : ''}`}>
+                    <Link
+                        href="/profile"
+                        title="Mon profil"
+                        className={`mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-stone-100 dark:hover:bg-stone-800 ${collapsed ? 'justify-center' : ''}`}
+                    >
                         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-sm font-semibold text-white shadow ring-2 ring-white/60 dark:ring-stone-700">
                             {(auth?.user?.name || '?').charAt(0).toUpperCase()}
                         </span>
@@ -135,7 +139,7 @@ export default function AdminLayout({ children }) {
                                 <p className="truncate text-[11px] text-stone-400 dark:text-stone-500">Administrateur</p>
                             </div>
                         )}
-                    </div>
+                    </Link>
 
                     <Link
                         href="/"

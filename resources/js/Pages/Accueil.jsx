@@ -498,20 +498,22 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
             {/* Explorer */}
             <section className="space-y-5">
                 <SectionLabel>Explorer</SectionLabel>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
                     {quickLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={`group flex flex-col items-center gap-2 rounded-2xl border border-stone-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:border-gold hover:shadow-md dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
+                            className={`group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-3 shadow-sm transition hover:border-gold hover:shadow-md sm:flex-col sm:gap-2 sm:rounded-2xl sm:p-5 sm:text-center sm:hover:-translate-y-1 dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
                         >
-                            <span className="grid h-11 w-11 place-items-center rounded-full bg-stone-100 text-teal-700 transition group-hover:bg-teal-700 group-hover:text-white dark:bg-stone-800 dark:text-teal-300">
+                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-stone-100 text-teal-700 transition group-hover:bg-teal-700 group-hover:text-white sm:h-11 sm:w-11 dark:bg-stone-800 dark:text-teal-300">
                                 {link.icon}
                             </span>
-                            <span className="font-serif text-base font-semibold text-stone-900 dark:text-stone-100">
-                                {link.label}
+                            <span className="flex min-w-0 flex-1 flex-col text-left sm:flex-none sm:text-center">
+                                <span className="font-serif text-sm font-semibold text-stone-900 sm:text-base dark:text-stone-100">
+                                    {link.label}
+                                </span>
+                                <span className="text-xs text-stone-500 dark:text-stone-400">{link.hint}</span>
                             </span>
-                            <span className="text-xs text-stone-500 dark:text-stone-400">{link.hint}</span>
                         </Link>
                     ))}
                 </div>

@@ -120,13 +120,16 @@ function SectionLabel({ children }) {
     );
 }
 
-function DailyCard({ label, children }) {
+function DailyCard({ label, children, footer }) {
     return (
-        <section className="flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 dark:border-stone-800 dark:bg-stone-900">
+        <section className="flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 lg:h-[32rem] dark:border-stone-800 dark:bg-stone-900">
             <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold">
                 <span>—</span> {label} <span>—</span>
             </p>
-            <div className="mt-5 flex flex-1 flex-col">{children}</div>
+            <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">{children}</div>
+            {footer && (
+                <div className="mt-4 shrink-0 border-t border-stone-100 pt-4 dark:border-stone-800">{footer}</div>
+            )}
         </section>
     );
 }
@@ -291,7 +294,25 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                     <HijriCalendar />
 
                     {verseOfDay && (
-                        <DailyCard label="Verset du jour">
+                        <DailyCard
+                            label="Verset du jour"
+                            footer={
+                                <>
+                                    <div className="text-center">
+                                        <Link
+                                            href={`/coran/${verseOfDay.surah_slug ?? verseOfDay.surah_number}`}
+                                            className={`text-sm font-semibold text-stone-500 transition hover:text-gold dark:text-stone-400 ${focusRing}`}
+                                        >
+                                            Sourate {verseOfDay.surah_number} — {pickSurahName(verseOfDay, lang)}, verset{' '}
+                                            {verseOfDay.ayah_number}
+                                        </Link>
+                                    </div>
+                                    <div className="mt-3 flex justify-center">
+                                        <ShareButton type="ayah" id={verseOfDay.id} size="sm" />
+                                    </div>
+                                </>
+                            }
+                        >
                             <p className="text-center font-arabic text-2xl leading-loose text-stone-800 dark:text-stone-100">
                                 {verseOfDay.text_ar}
                             </p>
@@ -300,23 +321,28 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                                     {pickTranslation(verseOfDay, lang)}
                                 </p>
                             )}
-                            <div className="mt-auto pt-5 text-center">
-                                <Link
-                                    href={`/coran/${verseOfDay.surah_slug ?? verseOfDay.surah_number}`}
-                                    className={`text-sm font-semibold text-stone-500 transition hover:text-gold dark:text-stone-400 ${focusRing}`}
-                                >
-                                    Sourate {verseOfDay.surah_number} — {pickSurahName(verseOfDay, lang)}, verset{' '}
-                                    {verseOfDay.ayah_number}
-                                </Link>
-                                <div className="mt-3 flex justify-center">
-                                    <ShareButton type="ayah" id={verseOfDay.id} size="sm" />
-                                </div>
-                            </div>
                         </DailyCard>
                     )}
 
                     {hadithOfDay && (
-                        <DailyCard label="Hadith du jour">
+                        <DailyCard
+                            label="Hadith du jour"
+                            footer={
+                                <>
+                                    <div className="text-center">
+                                        <Link
+                                            href="/hadiths"
+                                            className={`text-sm font-semibold text-stone-500 transition hover:text-gold dark:text-stone-400 ${focusRing}`}
+                                        >
+                                            Voir tous les hadiths
+                                        </Link>
+                                    </div>
+                                    <div className="mt-3 flex justify-center">
+                                        <ShareButton type="hadith" id={hadithOfDay.id} size="sm" />
+                                    </div>
+                                </>
+                            }
+                        >
                             <p className="text-center text-xs font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">
                                 Hadith n°{hadithOfDay.hadith_number}
                             </p>
@@ -336,17 +362,6 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                             <p className="mt-4 text-center text-xs font-semibold text-stone-400 dark:text-stone-500">
                                 {[hadithOfDay.narrator, hadithOfDay.grade].filter(Boolean).join(' · ')}
                             </p>
-                            <div className="mt-auto pt-5 text-center">
-                                <Link
-                                    href="/hadiths"
-                                    className={`text-sm font-semibold text-stone-500 transition hover:text-gold dark:text-stone-400 ${focusRing}`}
-                                >
-                                    Voir tous les hadiths
-                                </Link>
-                                <div className="mt-3 flex justify-center">
-                                    <ShareButton type="hadith" id={hadithOfDay.id} size="sm" />
-                                </div>
-                            </div>
                         </DailyCard>
                     )}
                 </div>

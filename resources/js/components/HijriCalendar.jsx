@@ -35,7 +35,7 @@ export default function HijriCalendar() {
     const calendar = useMemo(() => (mounted ? hijriMonthGrid(new Date(), lang) : null), [mounted, lang]);
 
     return (
-        <section className="flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 dark:border-stone-800 dark:bg-stone-900">
+        <section className="flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 lg:h-[32rem] dark:border-stone-800 dark:bg-stone-900">
             <p className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold">
                 <span>—</span> {t.title} <span>—</span>
             </p>
@@ -45,7 +45,7 @@ export default function HijriCalendar() {
             ) : !calendar ? (
                 <p className="mt-6 text-center text-sm text-stone-500 dark:text-stone-400">{t.unavailable}</p>
             ) : (
-                <>
+                <div className="flex flex-1 flex-col justify-center">
                     <p className="mt-5 text-center font-serif text-xl font-semibold leading-snug text-stone-900 sm:text-2xl dark:text-stone-100">
                         {calendar.todayLabel}
                     </p>
@@ -95,7 +95,7 @@ export default function HijriCalendar() {
                             ))}
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </section>
     );

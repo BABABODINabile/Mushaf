@@ -503,12 +503,12 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={`group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-3 shadow-sm transition hover:border-gold hover:shadow-md sm:flex-col sm:gap-2 sm:rounded-2xl sm:p-5 sm:text-center sm:hover:-translate-y-1 dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
+                            className={`group flex items-center justify-center gap-3 rounded-xl border border-stone-200 bg-white p-3 text-center shadow-sm transition hover:border-gold hover:shadow-md sm:flex-col sm:gap-2 sm:rounded-2xl sm:p-5 sm:hover:-translate-y-1 dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
                         >
                             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-stone-100 text-teal-700 transition group-hover:bg-teal-700 group-hover:text-white sm:h-11 sm:w-11 dark:bg-stone-800 dark:text-teal-300">
                                 {link.icon}
                             </span>
-                            <span className="flex min-w-0 flex-1 flex-col text-left sm:flex-none sm:text-center">
+                            <span className="flex min-w-0 flex-col">
                                 <span className="font-serif text-sm font-semibold text-stone-900 sm:text-base dark:text-stone-100">
                                     {link.label}
                                 </span>

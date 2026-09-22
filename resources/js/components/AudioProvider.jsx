@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import Medallion from './Medallion';
-import { surahAudioUrl } from '../lib/audio';
+import { surahAudioUrl, mp3FallbackReciter } from '../lib/audio';
 import { postJson } from '../lib/http';
 
 const AudioContext = createContext(null);
@@ -39,6 +39,7 @@ export function AudioProvider({ children, auth }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [audioError, setAudioError] = useState(null);
     const [repeat, setRepeat] = useState('none');
     const [continueMode, setContinueMode] = useState('none');
 
@@ -166,17 +167,19 @@ export function AudioProvider({ children, auth }) {
                 const r2Base = stateRef.current.r2PublicUrl;
                 const fmt = stateRef.current.format;
                 const nextUrl = surahAudioUrl(r2Base, reciterId, nextNum, fmt);
-                const nextSurahName = stateRef.current.reciter;
+                const reciterName = stateRef.current.reciter;
                 stateRef.current.url = nextUrl;
                 stateRef.current.title = `Sourate ${nextNum}`;
                 stateRef.current.surahNumber = nextNum;
                 stateRef.current.currentTime = 0;
                 stateRef.current.playing = true;
+                setAudioError(null);
                 setTrack({
                     url: nextUrl,
                     title: `Sourate ${nextNum}`,
-                    reciter: nextSurahName,
+                    reciter: reciterName,
                     surahNumber: nextNum,
+                    slug: nextNum,
                     r2PublicUrl: r2Base,
                     reciterId,
                     format: fmt,
@@ -196,6 +199,23 @@ export function AudioProvider({ children, auth }) {
             stateRef.current.volume = player?.volume ?? 0.8;
             persist();
         };
+        const handleAudioError = () => {
+            const s = stateRef.current;
+            const code = audio.error?.code ?? 0;
+            // MEDIA_ERR_SRC_NOT_SUPPORTED (4) sur Safari iOS = opus illisible.
+            const opusUnsupported = (s.format ?? 'opus') !== 'mp3' && (code === 4 || code === 0);
+            // eslint-disable-next-line no-console
+            console.warn('[audio] lecture impossible', { url: s.url, code });
+            setAudioError(
+                opusUnsupported
+                    ? 'opus-unsupported'
+                    : 'load-error',
+            );
+            stateRef.current.playing = false;
+            setIsPlaying(false);
+            persist();
+        };
+        audio.addEventListener('error', handleAudioError);
 
         import('plyr')
             .then(({ default: Plyr }) => {
@@ -252,7 +272,14 @@ setTrack({
                         { once: true }
                     );
                     if (stateRef.current.playing && !stateRef.current.closed) {
-                        player.play().catch(() => {});
+                        const pending = player.play();
+                        if (pending && typeof pending.catch === 'function') {
+                            pending.catch(() => {
+                                // autoplay bloqué : on reste en pause, l'utilisateur relancera
+                                stateRef.current.playing = false;
+                                setIsPlaying(false);
+                            });
+                        }
                     }
                 }
             })
@@ -262,6 +289,7 @@ setTrack({
 
         return () => {
             destroyed = true;
+            audio.removeEventListener('error', handleAudioError);
             player?.destroy();
             playerRef.current = null;
         };
@@ -311,7 +339,14 @@ setTrack({
     useEffect(() => {
         function handleKeyDown(e) {
             const target = e.target;
-            if (target instanceof HTMLElement && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+            if (
+                target instanceof HTMLElement &&
+                (target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.tagName === 'BUTTON' ||
+                    target.tagName === 'SELECT' ||
+                    target.isContentEditable)
+            ) {
                 return;
             }
 
@@ -353,10 +388,13 @@ setTrack({
     const playRef = useRef();
     const pauseRef = useRef();
     playRef.current = () => {
-        if (playerRef.current) {
-            playerRef.current.play().catch(() => {});
-        } else if (audioRef.current) {
-            audioRef.current.play().catch(() => {});
+        setAudioError(null);
+        const p = playerRef.current?.play() ?? audioRef.current?.play();
+        if (p && typeof p.catch === 'function') {
+            p.catch((err) => {
+                // eslint-disable-next-line no-console
+                console.warn('[audio] play() rejeté (autoplay/policy?)', err?.message ?? err);
+            });
         }
     };
     pauseRef.current = () => playerRef.current?.pause();
@@ -367,6 +405,7 @@ setTrack({
                 playRef.current();
                 return;
             }
+            setAudioError(null);
             stateRef.current.url = nextTrack.url;
             stateRef.current.title = nextTrack.title ?? '';
             stateRef.current.reciter = nextTrack.reciter ?? '';
@@ -423,7 +462,76 @@ setTrack({
         setIsPlaying(false);
         setCurrentTime(0);
         setDuration(0);
+        setAudioError(null);
         persist();
+    };
+
+    const goToSurah = (delta) => {
+        const current = stateRef.current.surahNumber;
+        if (!current) {
+            return;
+        }
+        const nextNum = ((current - 1 + delta + 114) % 114) + 1;
+        const reciterId = stateRef.current.reciterId;
+        const r2Base = stateRef.current.r2PublicUrl;
+        const fmt = stateRef.current.format;
+        if (!r2Base || !reciterId) {
+            return;
+        }
+        const nextUrl = surahAudioUrl(r2Base, reciterId, nextNum, fmt);
+        play({
+            url: nextUrl,
+            title: `Sourate ${nextNum}`,
+            reciter: stateRef.current.reciter,
+            surahNumber: nextNum,
+            slug: nextNum,
+            r2PublicUrl: r2Base,
+            reciterId,
+            format: fmt,
+        });
+    };
+
+    // Touches média / MediaSession : précédent / suivant.
+    useEffect(() => {
+        const prev = () => goToSurah(-1);
+        const next = () => goToSurah(1);
+        window.addEventListener('mushaf:audioPrev', prev);
+        window.addEventListener('mushaf:audioNext', next);
+        return () => {
+            window.removeEventListener('mushaf:audioPrev', prev);
+            window.removeEventListener('mushaf:audioNext', next);
+        };
+    }, []);
+
+    // Safari iOS : l'opus est illisible → rebascule vers le MP3.
+    const retryWithMp3 = () => {
+        const s = stateRef.current;
+        if (!s.surahNumber || !s.r2PublicUrl) {
+            return;
+        }
+        const reciters = window.__mushafReciters ?? null;
+        const mp3 = mp3FallbackReciter(reciters ?? []) ?? {
+            id: 'salah-ba-othman',
+            name: 'Salah Ba Othman',
+            format: 'mp3',
+        };
+        const url = surahAudioUrl(s.r2PublicUrl, mp3.id, s.surahNumber, mp3.format ?? 'mp3');
+        try {
+            localStorage.setItem('mushaf-reciter', mp3.id);
+        } catch {
+            // stockage indisponible : on ignore
+        }
+        play({
+            url,
+            title: s.title,
+            reciter: mp3.name,
+            surahNumber: s.surahNumber,
+            slug: s.surahNumber,
+            r2PublicUrl: s.r2PublicUrl,
+            reciterId: mp3.id,
+            format: mp3.format ?? 'mp3',
+            position: 0,
+        });
     };
 
     const seekTo = (time) => {
@@ -470,6 +578,9 @@ setTrack({
                 isPlaying,
                 currentTime,
                 duration,
+                audioError,
+                retryWithMp3,
+                goToSurah,
                 repeat,
                 repeatLabel,
                 continueMode,
@@ -488,7 +599,7 @@ setTrack({
             {/* Lecteur global persistant, monté une seule fois à la racine */}
             <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50">
                 <div
-                    className={`pointer-events-auto mx-auto w-full max-w-3xl px-3 pb-3 sm:px-6 sm:pb-4 ${track ? '' : 'hidden'}`}
+                    className={`pointer-events-auto mx-auto w-full max-w-3xl px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-[calc(1rem+env(safe-area-inset-bottom))] ${track ? '' : 'hidden'}`}
                 >
                     <div className="rounded-xl bg-white shadow-xl ring-1 ring-stone-200 dark:bg-stone-900 dark:ring-stone-700">
                         <div>
@@ -575,13 +686,11 @@ setTrack({
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                const url = track.r2PublicUrl
-                                                    ? `${track.r2PublicUrl}/${track.reciterId}/${String(track.surahNumber).padStart(3, '0')}.${track.format}`
-                                                    : null;
+                                                const url = track.url ?? null;
                                                 if (url) {
                                                     const a = document.createElement('a');
                                                     a.href = url;
-                                                    a.download = `quran-${track.surahNumber}.${track.format}`;
+                                                    a.download = `quran-${track.surahNumber}.${track.format ?? 'opus'}`;
                                                     a.target = '_blank';
                                                     a.click();
                                                 }
@@ -617,6 +726,22 @@ setTrack({
                             </div>
                         )}
                         </div>
+                        {audioError && (
+                            <div className="flex flex-col gap-2 border-t border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 sm:flex-row sm:items-center dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+                                <p className="flex-1">
+                                    {audioError === 'opus-unsupported'
+                                        ? 'Ce navigateur (Safari iOS) ne lit pas le format Opus. Réessayez en MP3.'
+                                        : "Lecture impossible (fichier indisponible ou réseau). Réessayez ou changez de récitateur."}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={retryWithMp3}
+                                    className="shrink-0 rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-800"
+                                >
+                                    Réessayer en MP3
+                                </button>
+                            </div>
+                        )}
                         <audio ref={audioRef} preload="metadata" className="plyr" />
                     </div>
                 </div>

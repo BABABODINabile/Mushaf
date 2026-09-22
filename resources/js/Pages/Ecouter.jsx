@@ -5,7 +5,7 @@ import SeoHead from '../components/SeoHead';
 import PageHeader from '../components/PageHeader';
 import Medallion from '../components/Medallion';
 import { useAudio } from '../components/AudioProvider';
-import { surahAudioUrl, savedReciterId } from '../lib/audio';
+import { surahAudioUrl, savedReciterId, effectiveReciterId } from '../lib/audio';
 import { usePreferences } from '../components/PreferencesContext';
 import { pickName } from '../lib/translation';
 
@@ -50,7 +50,7 @@ function ReciterDropdown({ reciters, value, onChange }) {
     }
 
     return (
-        <div className="relative" ref={ref}>
+        <div className="relative w-full sm:w-auto" ref={ref}>
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
@@ -58,7 +58,7 @@ function ReciterDropdown({ reciters, value, onChange }) {
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 aria-label={`Récitateur : ${current.name}`}
-                className={`flex min-w-[200px] items-center gap-3 rounded-xl border border-stone-300 bg-white py-2 pl-3 pr-2 shadow-sm transition hover:border-teal-400 hover:shadow active:scale-[0.99] focus:border-teal-500 focus:outline-none dark:border-stone-700 dark:bg-stone-900 dark:hover:border-teal-600 ${focusRing}`}
+                className={`flex w-full items-center gap-3 rounded-xl border border-stone-300 bg-white py-2 pl-3 pr-2 shadow-sm transition hover:border-teal-400 hover:shadow active:scale-[0.99] focus:border-teal-500 focus:outline-none sm:min-w-[200px] dark:border-stone-700 dark:bg-stone-900 dark:hover:border-teal-600 ${focusRing}`}
             >
                 <span className="text-left leading-tight">
                     <span className="block text-sm font-semibold text-stone-900 dark:text-stone-100">{current.name}</span>
@@ -136,6 +136,25 @@ export default function Ecouter({ surahs }) {
     const { lang } = usePreferences();
 
     const [reciterId, setReciterId] = useState(() => savedReciterId(reciters, defaultReciter));
+    const [mp3Fallback, setMp3Fallback] = useState(false);
+
+    useEffect(() => {
+        window.__mushafReciters = reciters;
+    }, [reciters]);
+
+    useEffect(() => {
+        const { id, fallbackApplied } = effectiveReciterId(reciters, reciterId, defaultReciter);
+        if (fallbackApplied && id !== reciterId) {
+            setReciterId(id);
+            try {
+                localStorage.setItem('mushaf-reciter', id);
+            } catch {
+                // stockage indisponible : on ignore
+            }
+        }
+        setMp3Fallback(fallbackApplied);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const setReciter = (id) => {
         setReciterId(id);
@@ -151,6 +170,11 @@ export default function Ecouter({ surahs }) {
                 description="Écoutez la récitation du Coran par plusieurs récitateurs, avec lecture continue et téléchargement."
                 path="/ecouter"
             />
+            {mp3Fallback && (
+                <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+                    Votre navigateur ne lit pas le format Opus : récitateur MP3 sélectionné automatiquement.
+                </p>
+            )}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <PageHeader
                     eyebrow="Audio"
@@ -158,7 +182,7 @@ export default function Ecouter({ surahs }) {
                     subtitle="Choisissez une sourate pour l'écouter sans interruption."
                 />
 
-                <div className="shrink-0">
+                <div className="shrink-0 w-full sm:w-auto">
                     <label className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-stone-400">
                         Récitateur
                     </label>

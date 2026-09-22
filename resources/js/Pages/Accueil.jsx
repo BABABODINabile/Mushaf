@@ -6,7 +6,7 @@ import SeoHead from '../components/SeoHead';
 import ShareButton from '../components/ShareButton';
 import { useAudio } from '../components/AudioProvider';
 import { usePreferences } from '../components/PreferencesContext';
-import { surahAudioUrl, savedReciterId } from '../lib/audio';
+import { surahAudioUrl, savedReciterId, effectiveReciterId } from '../lib/audio';
 import { pickTranslation, pickSurahName } from '../lib/translation';
 import { formatTime, timeAgo } from '../lib/time';
 import { shareOrDownload } from '../lib/shareCard';
@@ -190,6 +190,10 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
     };
 
     useEffect(() => {
+        window.__mushafReciters = reciters;
+    }, [reciters]);
+
+    useEffect(() => {
         if (!isLoggedIn) {
             return undefined;
         }
@@ -224,8 +228,8 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
         if (!audio) {
             return;
         }
-        const reciterId =
-            audio.reciter_id || savedReciterId(reciters, defaultReciter);
+        const saved = audio.reciter_id || savedReciterId(reciters, defaultReciter);
+        const { id: reciterId } = effectiveReciterId(reciters, saved, defaultReciter);
         const reciter = reciters.find((r) => r.id === reciterId) ?? reciters[0];
         if (!reciter || !r2PublicUrl) {
             return;

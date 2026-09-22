@@ -5,7 +5,7 @@ import SeoHead from '../components/SeoHead';
 import FavoriteButton from '../components/FavoriteButton';
 import ShareButton from '../components/ShareButton';
 import { useAudio } from '../components/AudioProvider';
-import { surahAudioUrl, savedReciterId } from '../lib/audio';
+import { surahAudioUrl, savedReciterId, effectiveReciterId } from '../lib/audio';
 import { postJson } from '../lib/http';
 import { usePreferences } from '../components/PreferencesContext';
 import { pickTranslation, pickName } from '../lib/translation';
@@ -142,6 +142,10 @@ export default function Surah({ surah, ayahs, prevSurah, nextSurah }) {
 
     const reciterId = savedReciterId(reciters, defaultReciter);
 
+    useEffect(() => {
+        window.__mushafReciters = reciters;
+    }, [reciters]);
+
     const fontRem = 1.05 + (fontSize - 1) * 0.2875;
 
     const handleGoToAyah = (e) => {
@@ -162,16 +166,17 @@ export default function Surah({ surah, ayahs, prevSurah, nextSurah }) {
             toggle();
             return;
         }
-        const currentReciter = reciters.find((r) => r.id === reciterId);
+        const { id: effectiveId } = effectiveReciterId(reciters, reciterId, defaultReciter);
+        const currentReciter = reciters.find((r) => r.id === effectiveId);
         play({
             id: surah.id,
-            url: surahAudioUrl(r2PublicUrl, reciterId, surah.number, currentReciter?.format ?? 'opus'),
+            url: surahAudioUrl(r2PublicUrl, effectiveId, surah.number, currentReciter?.format ?? 'opus'),
             title: `${pickName(surah, lang)} (${surah.number})`,
             reciter: currentReciter?.name,
             surahNumber: surah.number,
             slug: surah.slug,
             r2PublicUrl,
-            reciterId,
+            reciterId: effectiveId,
             format: currentReciter?.format ?? 'opus',
         });
     };

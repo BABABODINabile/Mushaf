@@ -16,10 +16,16 @@ class DailyContent
         $index = intdiv(now()->timestamp, 86400) % count($refs);
         [$surahNumber, $ayahNumber] = $refs[$index];
 
-        return Ayah::query()
+        $ayah = Ayah::query()
             ->where('number_in_surah', $ayahNumber)
             ->whereHas('surah', fn ($q) => $q->where('number', $surahNumber))
             ->with('surah')
             ->first();
+
+        if ($ayah && $ayah->number_in_surah === 1) {
+            $ayah->text_ar = QuranText::firstAyahLabel($ayah->text_ar);
+        }
+
+        return $ayah;
     }
 }

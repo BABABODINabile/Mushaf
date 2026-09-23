@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ayah;
 use App\Models\Hadith;
+use App\Services\QuranText;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -29,7 +30,9 @@ class ShareController extends Controller
             }
 
             $item = $ayah;
-            $textAr = $ayah->text_ar;
+            $textAr = $ayah->number_in_surah === 1
+                ? QuranText::firstAyahLabel($ayah->text_ar)
+                : $ayah->text_ar;
             $reference = "Sourate {$ayah->surah->number} ({$ayah->surah->name_ar} — {$ayah->surah->name_fr}), verset {$ayah->number_in_surah}";
 
             // Traduction selon la langue

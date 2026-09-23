@@ -1,6 +1,8 @@
-# Guide de migration — Sakina → Mushaf
+# Guide de migration — Sakina → Mushaf (archive historique)
 
-Ce guide documente, lot par lot, la migration de l'application **Sakina** (Laravel 13 + Blade) vers **Mushaf** (Laravel 13 + Inertia + React 19 + Tailwind 4). Son objectif est d'atteindre la **parité fonctionnelle** entre les deux applications, tout en respectant la réécriture frontend à base de composants React.
+> **Document historique** : la migration Sakina → Mushaf a atteint la parité et l'application est déployée. Ce guide est conservé comme archive ; son état des lieux (« réécriture en cours », routes manquantes, effectifs) est périmé et ne doit pas servir de référence.
+
+Ce guide documentait, lot par lot, la migration de l'application **Sakina** (Laravel + Blade) vers **Mushaf** (Laravel + Inertia + React + Tailwind). Son objectif était d'atteindre la **parité fonctionnelle** entre les deux applications, tout en respectant la réécriture frontend à base de composants React.
 
 > **Source** : `/run/media/nabile/Stockage/Projets/Islam/sakina/` (application compleète)
 > **Cible** : `/run/media/nabile/Stockage/Projets/Islam/mushaf/` (réécriture en cours)

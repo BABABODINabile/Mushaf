@@ -6,14 +6,10 @@ Mushaf propose une navigation fluide dans les sourates, la lecture des versets a
 
 ---
 
-## Capture d'écran
-
-<!-- Ajouter une capture d'écran du site ici -->
-
 ## Fonctionnalités
 
 - **Coran** : navigation dans les 114 sourates et leurs versets, avec recherche full-text.
-- **Audio** : lecture des sourates via 5 récitateurs différents (stockage Cloudflare R2), lecteur global avec reprise de position.
+- **Audio** : lecture des sourates via 11 récitateurs différents (stockage Cloudflare R2), lecteur global avec reprise de position.
 - **Hadiths** : consultation des hadiths des collections classiques (dont les 42 hadiths d'An-Nawawi), recherche.
 - **Verset & Hadith du jour** : contenus quotidiens mis en avant sur la page d'accueil.
 - **Quiz** : génération et soumission de quiz sur les versets.
@@ -47,10 +43,10 @@ Mushaf propose une navigation fluide dans les sourates, la lecture des versets a
 ### Configuration
 
 1. Cloner le dépôt :
-   ```bash
-   git clone https://github.com/<votre-utilisateur>/mushaf.git
-   cd mushaf
-   ```
+    ```bash
+    git clone https://github.com/BABABODINabile/Mushaf.git
+    cd Mushaf
+    ```
 
 2. Copier le modèle d'environnement et générer une clé :
    ```bash
@@ -106,6 +102,9 @@ Cela démarre le serveur de développement Laravel avec Vite en hot-reload.
 | `mushaf:import-hadiths` | Importe les 42 hadiths d'An-Nawawi |
 | `mushaf:send-reminders` | Envoie les rappels quotidiens par email (`--dry-run`) |
 | `mushaf:aggregate-stats` | Agrège les statistiques de consultation (`--days=90`) |
+| `mushaf:download-audios` | Télécharge les fichiers audio vers `storage/app/audio/` |
+| `mushaf:upload-to-r2` | Uploade les fichiers audio vers Cloudflare R2 |
+| `mushaf:fix-surah-names` | Corrige les noms FR/EN des 114 sourates |
 
 ## Tests
 
@@ -120,7 +119,7 @@ Les tests couvrent les fonctionnalités métier (favoris, profil, auth, abonneme
 Les fichiers PHP modifiés doivent respecter le style du projet via [Laravel Pint](https://github.com/laravel/pint) :
 
 ```bash
-vendor/bin/pint --format agent
+vendor/bin/pint --dirty --format agent
 ```
 
 ## License

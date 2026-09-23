@@ -6,7 +6,7 @@ import { postJson } from '../lib/http';
 
 const AudioContext = createContext(null);
 
-const STORAGE_KEY = 'mushaf_audio_state';
+const STORAGE_KEY = 'mushaf_audio_state_v2';
 const REPEAT_MODES = ['none', 'one', 'all'];
 const CONTINUE_MODES = ['none', 'next', 'random'];
 const SPEED_OPTIONS = [0.75, 1, 1.25, 1.5, 2];
@@ -20,18 +20,23 @@ export function useAudio() {
     return context;
 }
 
+function isValidAudioUrl(url) {
+    return typeof url === 'string' && url.startsWith('http') && !url.includes('//063.');
+}
+
 function loadState() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return null;
         const s = JSON.parse(raw);
-        return s && s.url ? s : null;
+        if (!s || !isValidAudioUrl(s.url)) return null;
+        return s;
     } catch {
         return null;
     }
 }
 
-export function AudioProvider({ children, auth }) {
+export function AudioProvider({ children, auth, r2PublicUrl: r2PublicUrlProp = '' }) {
     const loggedInRef = useRef(!!auth?.user);
     loggedInRef.current = !!auth?.user;
 
@@ -45,6 +50,8 @@ export function AudioProvider({ children, auth }) {
 
     const audioRef = useRef(null);
     const playerRef = useRef(null);
+    const r2PropRef = useRef(r2PublicUrlProp);
+    r2PropRef.current = r2PublicUrlProp;
     const repeatRef = useRef('none');
     const continueRef = useRef('none');
     const stateRef = useRef({
@@ -90,6 +97,9 @@ export function AudioProvider({ children, auth }) {
                 title: restored.title ?? '',
                 reciter: restored.reciter ?? '',
                 surahNumber: restored.surahNumber ?? null,
+                r2PublicUrl: restored.r2PublicUrl ?? r2PropRef.current ?? '',
+                reciterId: restored.reciterId ?? '',
+                format: restored.format ?? 'opus',
                 playing: restored.playing ?? false,
                 volume: typeof restored.volume === 'number' ? restored.volume : 0.8,
                 rate: typeof restored.rate === 'number' ? restored.rate : 1,
@@ -164,9 +174,12 @@ export function AudioProvider({ children, auth }) {
                     nextNum = current < 114 ? current + 1 : 1;
                 }
                 const reciterId = stateRef.current.reciterId;
-                const r2Base = stateRef.current.r2PublicUrl;
+                const r2Base = stateRef.current.r2PublicUrl || r2PropRef.current;
                 const fmt = stateRef.current.format;
                 const nextUrl = surahAudioUrl(r2Base, reciterId, nextNum, fmt);
+                if (!nextUrl) {
+                    return;
+                }
                 const reciterName = stateRef.current.reciter;
                 stateRef.current.url = nextUrl;
                 stateRef.current.title = `Sourate ${nextNum}`;
@@ -251,34 +264,40 @@ export function AudioProvider({ children, auth }) {
 
                 // Reprise après rechargement
                 if (stateRef.current.url && !stateRef.current.closed) {
-                    const restoredUrl = stateRef.current.url;
-setTrack({
-                url: restoredUrl,
-                title: stateRef.current.title,
-                reciter: stateRef.current.reciter,
-                surahNumber: stateRef.current.surahNumber,
-                r2PublicUrl: stateRef.current.r2PublicUrl,
-                reciterId: stateRef.current.reciterId,
-                format: stateRef.current.format,
-            });
-                    audio.src = restoredUrl;
-                    audio.addEventListener(
-                        'loadedmetadata',
-                        () => {
-                            if (stateRef.current.currentTime > 0 && audio.duration) {
-                                audio.currentTime = Math.min(stateRef.current.currentTime, audio.duration);
+                    if (destroyed || !isValidAudioUrl(stateRef.current.url)) {
+                        stateRef.current.url = '';
+                        stateRef.current.playing = false;
+                        persist();
+                    } else {
+                        const restoredUrl = stateRef.current.url;
+                        setTrack({
+                            url: restoredUrl,
+                            title: stateRef.current.title,
+                            reciter: stateRef.current.reciter,
+                            surahNumber: stateRef.current.surahNumber,
+                            r2PublicUrl: stateRef.current.r2PublicUrl,
+                            reciterId: stateRef.current.reciterId,
+                            format: stateRef.current.format,
+                        });
+                        audio.src = restoredUrl;
+                        audio.addEventListener(
+                            'loadedmetadata',
+                            () => {
+                                if (stateRef.current.currentTime > 0 && audio.duration) {
+                                    audio.currentTime = Math.min(stateRef.current.currentTime, audio.duration);
+                                }
+                            },
+                            { once: true }
+                        );
+                        if (stateRef.current.playing && !stateRef.current.closed) {
+                            const pending = player.play();
+                            if (pending && typeof pending.catch === 'function') {
+                                pending.catch(() => {
+                                    // autoplay bloqué : on reste en pause, l'utilisateur relancera
+                                    stateRef.current.playing = false;
+                                    setIsPlaying(false);
+                                });
                             }
-                        },
-                        { once: true }
-                    );
-                    if (stateRef.current.playing && !stateRef.current.closed) {
-                        const pending = player.play();
-                        if (pending && typeof pending.catch === 'function') {
-                            pending.catch(() => {
-                                // autoplay bloqué : on reste en pause, l'utilisateur relancera
-                                stateRef.current.playing = false;
-                                setIsPlaying(false);
-                            });
                         }
                     }
                 }
@@ -401,6 +420,12 @@ setTrack({
 
     const play = (nextTrack) => {
         if (nextTrack) {
+            if (!isValidAudioUrl(nextTrack.url)) {
+                // eslint-disable-next-line no-console
+                console.warn('[audio] URL invalide, lecture refusée', { url: nextTrack.url });
+                setAudioError('load-error');
+                return;
+            }
             if (nextTrack.url === stateRef.current.url) {
                 playRef.current();
                 return;
@@ -473,12 +498,15 @@ setTrack({
         }
         const nextNum = ((current - 1 + delta + 114) % 114) + 1;
         const reciterId = stateRef.current.reciterId;
-        const r2Base = stateRef.current.r2PublicUrl;
+        const r2Base = stateRef.current.r2PublicUrl || r2PropRef.current;
         const fmt = stateRef.current.format;
         if (!r2Base || !reciterId) {
             return;
         }
         const nextUrl = surahAudioUrl(r2Base, reciterId, nextNum, fmt);
+        if (!nextUrl) {
+            return;
+        }
         play({
             url: nextUrl,
             title: `Sourate ${nextNum}`,
@@ -503,10 +531,18 @@ setTrack({
         };
     }, []);
 
+    // Mémorise la base R2 fournie par la page (sans usePage dans le provider).
+    useEffect(() => {
+        if (r2PublicUrlProp && !stateRef.current.r2PublicUrl) {
+            stateRef.current.r2PublicUrl = r2PublicUrlProp;
+        }
+    }, [r2PublicUrlProp]);
+
     // Safari iOS : l'opus est illisible → rebascule vers le MP3.
     const retryWithMp3 = () => {
         const s = stateRef.current;
-        if (!s.surahNumber || !s.r2PublicUrl) {
+        const r2Base = s.r2PublicUrl || r2PropRef.current;
+        if (!s.surahNumber || !r2Base) {
             return;
         }
         const reciters = window.__mushafReciters ?? null;
@@ -515,7 +551,10 @@ setTrack({
             name: 'Salah Ba Othman',
             format: 'mp3',
         };
-        const url = surahAudioUrl(s.r2PublicUrl, mp3.id, s.surahNumber, mp3.format ?? 'mp3');
+        const url = surahAudioUrl(r2Base, mp3.id, s.surahNumber, mp3.format ?? 'mp3');
+        if (!url) {
+            return;
+        }
         try {
             localStorage.setItem('mushaf-reciter', mp3.id);
         } catch {
@@ -527,7 +566,7 @@ setTrack({
             reciter: mp3.name,
             surahNumber: s.surahNumber,
             slug: s.surahNumber,
-            r2PublicUrl: s.r2PublicUrl,
+            r2PublicUrl: r2Base,
             reciterId: mp3.id,
             format: mp3.format ?? 'mp3',
             position: 0,
@@ -592,7 +631,7 @@ setTrack({
                 seekTo,
                 toggleRepeat,
                 toggleContinue,
-                r2PublicUrl: stateRef.current.r2PublicUrl,
+                r2PublicUrl: stateRef.current.r2PublicUrl || r2PropRef.current,
             }}
         >
             {children}
@@ -727,7 +766,10 @@ setTrack({
                         )}
                         </div>
                         {audioError && (
-                            <div className="flex flex-col gap-2 border-t border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 sm:flex-row sm:items-center dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+                            <div
+                                key="audio-error"
+                                className="flex flex-col gap-2 border-t border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 sm:flex-row sm:items-center dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100"
+                            >
                                 <p className="flex-1">
                                     {audioError === 'opus-unsupported'
                                         ? 'Ce navigateur (Safari iOS) ne lit pas le format Opus. Réessayez en MP3.'
@@ -742,7 +784,11 @@ setTrack({
                                 </button>
                             </div>
                         )}
-                        <audio ref={audioRef} preload="metadata" className="plyr" />
+                        {/* Conteneur stable possédé par Plyr : React ne réconcilie que ce wrapper,
+                            jamais les nœuds que Plyr crée autour de <audio>. */}
+                        <div data-plyr-root suppressHydrationWarning>
+                            <audio ref={audioRef} preload="metadata" className="plyr" />
+                        </div>
                     </div>
                 </div>
             </div>

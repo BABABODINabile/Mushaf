@@ -24,7 +24,7 @@ createInertiaApp({
 
         return (
             <PreferencesProvider>
-                <AudioProvider auth={page.props.auth}>
+                <AudioProvider auth={page.props.auth} r2PublicUrl={page.props.r2PublicUrl ?? ''}>
                     <ConfirmProvider>{app}</ConfirmProvider>
                 </AudioProvider>
             </PreferencesProvider>

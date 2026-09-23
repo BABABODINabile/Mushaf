@@ -3,9 +3,12 @@
  * Format : {public_url}/{reciter}/{numéro à 3 chiffres}.{format}
  */
 export function surahAudioUrl(r2PublicUrl, reciterId, surahNumber, format = 'opus') {
-    const num = String(surahNumber).padStart(3, '0');
+    const num = Number(surahNumber);
+    if (!r2PublicUrl || !reciterId || !Number.isInteger(num) || num < 1 || num > 114) {
+        return null;
+    }
 
-    return `${r2PublicUrl}/${reciterId}/${num}.${format}`;
+    return `${String(r2PublicUrl).replace(/\/+$/, '')}/${reciterId}/${String(num).padStart(3, '0')}.${format}`;
 }
 
 /**

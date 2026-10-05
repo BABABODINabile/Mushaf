@@ -4,8 +4,10 @@ import AppLayout from '../components/AppLayout';
 export default function Unsubscribed() {
     return (
         <div className="mx-auto flex max-w-md flex-col items-center justify-center py-16 text-center">
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-stone-100 text-3xl">
-                ✅
+            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-teal-50 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300">
+                <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
             </span>
             <h1 className="mt-6 text-2xl font-bold text-stone-900">Désabonnement confirmé</h1>
             <p className="mt-2 text-stone-500">

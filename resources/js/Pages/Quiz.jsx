@@ -349,13 +349,13 @@ function ConfigScreen({ t, onStart, error, weeklyTop, myRank }) {
                 {weeklyTop?.length > 0 && (
                     <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
                         <p className="flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.16em] text-gold">
-                            <span aria-hidden="true">🏆</span> <span>—</span> {t.weeklyTop} <span>—</span>
+                                                        <span>—</span> {t.weeklyTop} <span>—</span>
                         </p>
                         <ol className="mt-3 space-y-1.5">
                             {weeklyTop.slice(0, 3).map((entry) => (
                                 <li key={`${entry.rank}-${entry.user}`} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${entry.isMe ? 'bg-gradient-to-r from-teal-700 to-emerald-700 font-semibold text-white' : 'bg-stone-50 dark:bg-stone-800'}`}>
                                     <span className="flex min-w-0 items-center gap-2">
-                                        <span className="w-6 shrink-0 text-center font-bold text-gold">{['🥇', '🥈', '🥉'][entry.rank - 1]}</span>
+                                        <span className="min-w-6 shrink-0 text-center font-bold text-gold">n°{entry.rank}</span>
                                         <span className={`truncate ${entry.isMe ? 'text-white' : 'text-stone-700 dark:text-stone-300'}`}>{entry.user}</span>
                                         {entry.isMe && <span className="shrink-0 text-xs text-teal-100">{t.isYou}</span>}
                                     </span>
@@ -678,7 +678,7 @@ function ResultScreen({ result, t, onReplay, onHome }) {
                 ? t.good
                 : t.tryAgain;
 
-    const rankIcon = (rank) => (rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank);
+    const rankIcon = (rank) => `n°${rank}`;
 
     return (
         <div className="mx-auto max-w-md space-y-6 text-center">
@@ -738,7 +738,7 @@ function ResultScreen({ result, t, onReplay, onHome }) {
                         {result.weeklyTop?.length > 0 && (
                             <div className="mt-6 rounded-xl border border-stone-200 bg-stone-50 p-4 text-left dark:border-stone-700 dark:bg-stone-800/50">
                                 <p className="flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.16em] text-gold">
-                                    <span aria-hidden="true">🏆</span> <span>—</span> {t.weeklyTop} <span>—</span>
+                                                                <span>—</span> {t.weeklyTop} <span>—</span>
                                 </p>
                                 <ol className="mt-3 space-y-1.5">
                                     {result.weeklyTop.map((entry) => (
@@ -751,7 +751,7 @@ function ResultScreen({ result, t, onReplay, onHome }) {
                                             }`}
                                         >
                                             <span className="flex min-w-0 items-center gap-2">
-                                                <span className="w-6 shrink-0 text-center font-bold text-gold">{rankIcon(entry.rank)}</span>
+                                                <span className="min-w-6 shrink-0 text-center font-bold text-gold">{rankIcon(entry.rank)}</span>
                                                 <span className={`truncate ${entry.isMe ? 'text-white' : 'text-stone-700 dark:text-stone-300'}`}>
                                                     {entry.user}
                                                 </span>

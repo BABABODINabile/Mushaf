@@ -432,7 +432,7 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                         <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 dark:border-stone-800 dark:bg-stone-900">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold">
-                                    <span className="text-sm">🔥</span> <span>—</span> Ma progression <span>—</span>
+                                    <span>—</span> Ma progression <span>—</span>
                                 </p>
                                 <p className="text-xs font-semibold text-stone-400 dark:text-stone-500">
                                     {readingStats.weekAyahs} versets cette semaine · {readingStats.weekSurahs} sourates
@@ -478,7 +478,7 @@ export default function Accueil({ verseOfDay, hadithOfDay }) {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {goalPct >= 100 && (
-                                        <span className="text-xs font-bold text-gold">Objectif atteint 👏</span>
+                                        <span className="text-xs font-bold text-gold">Objectif atteint</span>
                                     )}
                                     <button
                                         type="button"

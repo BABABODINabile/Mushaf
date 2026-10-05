@@ -89,47 +89,50 @@ export default function Hadiths({ collection, hadiths, query: serverQuery }) {
                                 key={hadith.id}
                                 className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900"
                             >
-                                <button
-                                    type="button"
-                                    onClick={() => setOpenId(open ? null : hadith.id)}
-                                    className="w-full px-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
-                                >
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center gap-3">
-                                            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-stone-100 text-sm font-semibold text-stone-600 dark:bg-stone-800 dark:text-stone-300">
-                                                {hadith.hadith_number}
-                                            </span>
-                                            <div>
-                                                <p className="font-medium text-stone-900 dark:text-stone-100">
-                                                    {hadith.title || `Hadith n°${hadith.hadith_number}`}
-                                                </p>
-                                                {hadith.narrator && (
-                                                    <p className="text-xs text-stone-500 dark:text-stone-400">{hadith.narrator}</p>
-                                                )}
-                                            </div>
+                                <div className="flex items-center justify-between gap-3 px-5 py-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setOpenId(open ? null : hadith.id)}
+                                        aria-expanded={open}
+                                        aria-controls={`hadith-panel-${hadith.id}`}
+                                        className={`flex min-w-0 flex-1 items-center gap-3 text-left ${focusRing}`}
+                                    >
+                                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-stone-100 text-sm font-semibold text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+                                            {hadith.hadith_number}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-medium text-stone-900 dark:text-stone-100">
+                                                {hadith.title || `Hadith n°${hadith.hadith_number}`}
+                                            </p>
+                                            {hadith.narrator && (
+                                                <p className="text-xs text-stone-500 dark:text-stone-400">{hadith.narrator}</p>
+                                            )}
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <FavoriteButton
-                                                type="hadith"
-                                                id={hadith.hadith_number}
-                                                size="sm"
-                                            />
-                                            <ShareButton type="hadith" id={hadith.id} size="sm" />
-                                            <svg
-                                                className={`h-5 w-5 shrink-0 text-stone-400 transition dark:text-stone-500 ${open ? 'rotate-180' : ''}`}
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                strokeWidth={2}
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </div>
+                                        <svg
+                                            className={`h-5 w-5 shrink-0 text-stone-400 transition dark:text-stone-500 ${open ? 'rotate-180' : ''}`}
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth={2}
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div className="flex shrink-0 items-center gap-2">
+                                        <FavoriteButton
+                                            type="hadith"
+                                            id={hadith.hadith_number}
+                                            size="sm"
+                                        />
+                                        <ShareButton type="hadith" id={hadith.id} size="sm" />
                                     </div>
-                                </button>
+                                </div>
 
                                 {open && (
-                                    <div className="animate-[menuIn_0.25s_ease-out] border-t border-stone-100 px-5 py-4 dark:border-stone-800">
+                                    <div
+                                        id={`hadith-panel-${hadith.id}`}
+                                        className="animate-[menuIn_0.25s_ease-out] border-t border-stone-100 px-5 py-4 dark:border-stone-800"
+                                    >
                                         {hadith.text_ar && (
                                             <p className="text-right font-arabic text-xl leading-loose text-stone-800 dark:text-stone-100">
                                                 {hadith.text_ar}

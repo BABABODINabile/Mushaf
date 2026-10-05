@@ -17,3 +17,6 @@ Safari iOS ne lit pas l'Opus : 10/11 récitateurs sont en opus, seul salah-ba-ot
 
 ## Pas de button imbriqué autour de Favorite/Share
 FavoriteButton et ShareButton rendent chacun un <button>. Ne jamais les mettre à l'intérieur d'un <button> parent (ex. accordéon) : HTML invalide + hydration error React « button cannot be a descendant of button ». Structure : header en div flex, toggle en button seul avec aria-expanded/aria-controls, actions en div sœur.
+
+## Toasts flash idempotents sous StrictMode
+app.jsx a strictMode:true : en dev chaque effet tourne 2 fois. Un effet qui ajoute un toast doit être idempotent : le middleware partage flash.key (uuid unique par redirection avec message) et FlashMessages n'affiche chaque clé qu'une fois (ref). Sans ça, 2 toasts par action admin.

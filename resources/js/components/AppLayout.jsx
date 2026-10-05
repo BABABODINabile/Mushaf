@@ -110,12 +110,131 @@ export default function AppLayout({ children }) {
             ? 'rounded-full bg-teal-700 text-white'
             : 'rounded-full text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white';
 
+    const navLinks = allNavItems.map((item) => (
+        <li key={item.href} className="shrink-0">
+            <Link
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className={`block whitespace-nowrap px-4 py-2 text-[0.82rem] font-semibold uppercase tracking-wide transition ${tabClass(
+                    item.href,
+                )} ${focusRing}`}
+            >
+                {item.label}
+            </Link>
+        </li>
+    ));
+
+    const actionsFragment = (
+        <>
+            <Link
+                href="/search"
+                title={t.search}
+                aria-label={t.search}
+                className={`grid h-10 w-10 place-items-center rounded-full border border-stone-200 bg-stone-100 text-stone-600 transition hover:border-gold hover:text-gold dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400 ${focusRing}`}
+            >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+            </Link>
+
+            <button
+                type="button"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                title="Lectures récentes"
+                aria-label="Lectures récentes"
+                className="grid h-10 w-10 place-items-center rounded-full border border-stone-200 bg-stone-100 text-stone-600 transition hover:border-gold hover:text-gold dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400"
+            >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+            </button>
+
+            <div className="flex items-center gap-0.5 rounded-full border border-stone-200 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900">
+                {['fr', 'en', 'ar'].map((code) => (
+                    <button
+                        key={code}
+                        type="button"
+                        onClick={() => setLang(code)}
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide transition ${
+                            lang === code
+                                ? 'bg-teal-700 text-white'
+                                : 'text-stone-400 hover:text-stone-900 dark:text-stone-500 dark:hover:text-white'
+                        } ${focusRing}`}
+                    >
+                        {code}
+                    </button>
+                ))}
+            </div>
+
+            {auth.user ? (
+                <div className="flex items-center gap-2">
+                    {auth.user.is_admin && (
+                        <Link
+                            href="/admin"
+                            onClick={() => setOpen(false)}
+                            className={`rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800 ${focusRing}`}
+                        >
+                            {t.admin}
+                        </Link>
+                    )}
+                    <button
+                        type="button"
+                        onClick={() => router.post('/logout')}
+                        className={`rounded-full px-4 py-1.5 text-sm font-semibold text-stone-600 transition hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-white ${focusRing}`}
+                    >
+                        {t.logout}
+                    </button>
+                </div>
+            ) : (
+                <div className="flex items-center gap-2">
+                    <Link
+                        href="/login"
+                        onClick={() => setOpen(false)}
+                        className="rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
+                    >
+                        {t.login}
+                    </Link>
+                    <Link
+                        href="/register"
+                        onClick={() => setOpen(false)}
+                        className={`rounded-full bg-teal-700 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-teal-800 ${focusRing}`}
+                    >
+                        {t.register}
+                    </Link>
+                </div>
+            )}
+
+            <div className="flex items-center gap-2 rounded-full border border-stone-200 bg-stone-100 px-3 py-1.5 text-xs font-semibold text-stone-500 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
+                <span>{t.theme}</span>
+                <button
+                    type="button"
+                    onClick={() => setTheme('jour')}
+                    title="Jour"
+                    className={`${theme === 'jour' ? 'text-gold' : 'opacity-40 hover:opacity-80'} ${focusRing}`}
+                >
+                    ☀
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setTheme('nuit')}
+                    title="Nuit"
+                    className={`${theme === 'nuit' ? 'text-gold' : 'opacity-40 hover:opacity-80'} ${focusRing}`}
+                >
+                    ☾
+                </button>
+            </div>
+        </>
+    );
+
     return (
         <>
         <div className="min-h-screen bg-stone-50 dark:bg-stone-950">
             <header className="sticky top-0 z-40 border-b border-stone-200 bg-stone-50/90 backdrop-blur dark:border-stone-800 dark:bg-stone-950/90">
-                <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3 px-4 py-3 sm:px-6">
+                <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
                     <Brand />
+
+                    <div className="hidden items-center gap-3 lg:flex">{actionsFragment}</div>
 
                     <button
                         type="button"
@@ -123,7 +242,7 @@ export default function AppLayout({ children }) {
                         aria-expanded={open}
                         aria-controls="headerPanel"
                         aria-label="Menu"
-                        className={`ml-auto flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-xl border border-stone-200 bg-stone-100 lg:hidden dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
+                        className={`flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-xl border border-stone-200 bg-stone-100 lg:hidden dark:border-stone-800 dark:bg-stone-900 ${focusRing}`}
                     >
                         <span
                             className={`h-0.5 w-5 rounded-full bg-stone-800 transition duration-200 dark:bg-stone-200 ${
@@ -141,131 +260,30 @@ export default function AppLayout({ children }) {
                             }`}
                         />
                     </button>
+                </div>
 
-                    <div
-                        id="headerPanel"
-                        className={`${
-                            open ? 'flex' : 'hidden'
-                        } w-full flex-col gap-4 border-t border-stone-200 pt-4 lg:flex lg:w-auto lg:flex-row lg:items-center lg:gap-5 lg:border-0 lg:pt-0 dark:border-stone-800`}
-                    >
-                        <ul className="flex flex-wrap items-center gap-1 rounded-full border border-stone-200 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900">
-                            {allNavItems.map((item) => (
-                                <li key={item.href}>
-                                    <Link
-                                        href={item.href}
-                                        onClick={() => setOpen(false)}
-                                        className={`block px-4 py-2 text-[0.82rem] font-semibold uppercase tracking-wide transition ${tabClass(
-                                            item.href,
-                                        )} ${focusRing}`}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
+                <div
+                    id="headerPanel"
+                    className={`${
+                        open ? 'flex' : 'hidden'
+                    } flex-col gap-4 border-t border-stone-200 px-4 pb-4 pt-4 lg:hidden dark:border-stone-800`}
+                >
+                    <ul className="flex flex-wrap items-center gap-1 self-start rounded-full border border-stone-200 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900">
+                        {navLinks}
+                    </ul>
 
-                        <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                                href="/search"
-                                title={t.search}
-                                aria-label={t.search}
-                                className={`grid h-10 w-10 place-items-center rounded-full border border-stone-200 bg-stone-100 text-stone-600 transition hover:border-gold hover:text-gold dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400 ${focusRing}`}
-                            >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                                    <circle cx="11" cy="11" r="8" />
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                </svg>
-                            </Link>
-
-                            <button
-                                type="button"
-                                onClick={() => setSidebarOpen(!sidebarOpen)}
-                                title="Lectures récentes"
-                                aria-label="Lectures récentes"
-                                className="grid h-10 w-10 place-items-center rounded-full border border-stone-200 bg-stone-100 text-stone-600 transition hover:border-gold hover:text-gold dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400"
-                            >
-                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                </svg>
-                            </button>
-
-                            <div className="flex items-center gap-0.5 rounded-full border border-stone-200 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900">
-                                {['fr', 'en', 'ar'].map((code) => (
-                                    <button
-                                        key={code}
-                                        type="button"
-                                        onClick={() => setLang(code)}
-                                        className={`rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide transition ${
-                                            lang === code
-                                                ? 'bg-teal-700 text-white'
-                                                : 'text-stone-400 hover:text-stone-900 dark:text-stone-500 dark:hover:text-white'
-                                        } ${focusRing}`}
-                                    >
-                                        {code}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {auth.user ? (
-                                <div className="flex items-center gap-2">
-                                    {auth.user.is_admin && (
-                                        <Link
-                                            href="/admin"
-                                            onClick={() => setOpen(false)}
-className={`rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800 ${focusRing}`}
-                                        >
-                                            {t.admin}
-                                        </Link>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => router.post('/logout')}
-                                        className={`rounded-full px-4 py-1.5 text-sm font-semibold text-stone-600 transition hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-white ${focusRing}`}
-                                    >
-                                        {t.logout}
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    <Link
-                                        href="/login"
-                                        onClick={() => setOpen(false)}
-                                        className="rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
-                                    >
-                                        {t.login}
-                                    </Link>
-                                    <Link
-                                        href="/register"
-                                        onClick={() => setOpen(false)}
-                                        className={`rounded-full bg-teal-700 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-teal-800 ${focusRing}`}
-                                    >
-                                        {t.register}
-                                    </Link>
-                                </div>
-                            )}
-
-                            <div className="flex items-center gap-2 rounded-full border border-stone-200 bg-stone-100 px-3 py-1.5 text-xs font-semibold text-stone-500 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
-                                <span>{t.theme}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => setTheme('jour')}
-                                    title="Jour"
-                                    className={`${theme === 'jour' ? 'text-gold' : 'opacity-40 hover:opacity-80'} ${focusRing}`}
-                                >
-                                    ☀
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setTheme('nuit')}
-                                    title="Nuit"
-                                    className={`${theme === 'nuit' ? 'text-gold' : 'opacity-40 hover:opacity-80'} ${focusRing}`}
-                                >
-                                    ☾
-                                </button>
-                            </div>
-                        </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                        {actionsFragment}
                     </div>
                 </div>
+                <nav
+                    aria-label="Navigation principale"
+                    className="hidden border-t border-stone-200/70 px-4 py-2 sm:px-6 lg:block dark:border-stone-800"
+                >
+                    <ul className="flex w-fit max-w-full items-center gap-1 overflow-x-auto rounded-full border border-stone-200 bg-stone-100 p-1 dark:border-stone-800 dark:bg-stone-900">
+                        {navLinks}
+                    </ul>
+                </nav>
             </header>
 
             <main className="px-4 pb-32 pt-8 sm:px-6">{children}</main>

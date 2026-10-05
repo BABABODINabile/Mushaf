@@ -14,3 +14,6 @@ L'extension intl du serveur PHP n'a AUCUN calendrier islamique compilé (islamic
 
 ## Audio iOS : fallback Opus vers MP3 obligatoire
 Safari iOS ne lit pas l'Opus : 10/11 récitateurs sont en opus, seul salah-ba-othman est en mp3. Toujours résoudre le récitateur via effectiveReciterId() (lib/audio.js), exposer window.__mushafReciters pour le retry, et afficher le bandeau d'erreur du lecteur global au lieu de catch silencieux.
+
+## Pas de button imbriqué autour de Favorite/Share
+FavoriteButton et ShareButton rendent chacun un <button>. Ne jamais les mettre à l'intérieur d'un <button> parent (ex. accordéon) : HTML invalide + hydration error React « button cannot be a descendant of button ». Structure : header en div flex, toggle en button seul avec aria-expanded/aria-controls, actions en div sœur.

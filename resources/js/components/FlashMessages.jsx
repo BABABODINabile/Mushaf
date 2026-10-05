@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import { XIcon } from './Icons';
 
@@ -8,21 +8,26 @@ let idCounter = 0;
  * Affiche les messages flash Inertia (success/error) en haut à droite.
  * Auto-fermeture après 5s + bouton manuel.
  * Lit usePage().props.flash.success / .error (lazy getters du middleware).
+ * La clé flash (une par redirection) garantit un seul toast par action même
+ * quand StrictMode rejoue les effets, et ré-affiche un même message répété.
  */
 export default function FlashMessages() {
     const { flash } = usePage().props;
     const [messages, setMessages] = useState([]);
     const [leaving, setLeaving] = useState({});
+    const seenKeyRef = useRef(null);
 
     useEffect(() => {
+        if (!flash?.success && !flash?.error) return;
+        const key = flash?.key ?? `${flash?.success}|${flash?.error}`;
+        if (seenKeyRef.current === key) return;
+        seenKeyRef.current = key;
         const next = [];
         if (flash?.success) next.push({ type: 'success', text: flash.success });
         if (flash?.error) next.push({ type: 'error', text: flash.error });
-        if (next.length) {
-            setMessages((prev) => [...prev, ...next.map((m) => ({ ...m, id: ++idCounter }))]);
-        }
+        setMessages((prev) => [...prev, ...next.map((m) => ({ ...m, id: ++idCounter }))]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flash?.success, flash?.error]);
+    }, [flash?.success, flash?.error, flash?.key]);
 
     useEffect(() => {
         if (messages.length === 0) return;
